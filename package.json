@@ -1,0 +1,26 @@
+{
+  "name": "react-native-tab-view-reanimated-3",
+  "version": "1.0.0",
+  "description": "A package create tab view in react native",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "tab-view",
+    "react-native",
+    "reanimated-3"
+  ],
+  "author": "Nguyen Hoang Anh Tuan",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jameheller98/react-native-tab-view-reanimated-3.git"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "react": "^19.0.0-rc-f994737d14-20240522",
+    "react-native": "^0.74.2",
+    "react-native-pager-view": "^6.3.1",
+    "react-native-reanimated": "^3.12.0"
+  }
+}

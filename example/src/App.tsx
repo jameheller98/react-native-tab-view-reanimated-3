@@ -1,12 +1,12 @@
 import * as React from 'react';
 
 import { StyleSheet, View } from 'react-native';
-import { TabViewReanimated3View } from 'react-native-tab-view-reanimated-3';
+import { TabView } from 'react-native-tab-view-reanimated-3';
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <TabViewReanimated3View color="#32a852" style={styles.box} />
+      <TabView color="#32a852" style={styles.box} />
     </View>
   );
 }

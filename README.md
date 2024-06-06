@@ -11,11 +11,34 @@ npm install react-native-tab-view-reanimated-3
 ## Usage
 
 ```js
-import { TabViewReanimated3View } from "react-native-tab-view-reanimated-3";
+import { TabView, SceneMap, RTabView, Route } from "react-native-tab-view-reanimated-3";
+
+const Tab1 = () => (
+  <View style={{ flex: 1, borderWidth: 2, borderColor: 'red' }}>
+  </View>
+)
+const Tab2 = () => <View style={{ flex: 1, borderWidth: 2, borderColor: 'blue' }}></View>
+
+const scenes = SceneMap({
+  "1": Tab1,
+  "2": Tab2,
+})
 
 // ...
 
-<TabViewReanimated3View color="tomato" />
+export const Test:FC<any> = () => {
+  const refTabView = useRef<RTabView>(null)
+  const [routes] = useState<Route<number>[]>([
+    { key: "1", title: "Tab 1", data: 0 },
+    { key: "2", title: "Tab 2 2", data: 1 },
+  ])
+
+  return (
+    <View style={{flex: 1}}>
+      <TabView ref={refTabView} routes={routes} renderScene={scenes} lazy />
+    </View>
+  )
+}
 ```
 
 ## Contributing

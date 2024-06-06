@@ -16,8 +16,8 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
-import type { TMeasure, TTabBar } from '../../../src/tabView.types';
-import { getMeasure } from '../../../src/tabViewUtils';
+import type { Route, TMeasure, TTabBar } from '../tabView.types';
+import { getMeasure } from '../tabViewUtils';
 import TabBarItem from './TabBarItem';
 
 const { width: widthWindow } = Dimensions.get('window');
@@ -117,7 +117,7 @@ const TabBar = <T,>({
           ]}
           onContentSizeChange={handleLayout}
         >
-          {routes.map((item, index) => (
+          {routes.map((item: Route<T>, index: number) => (
             <TouchableOpacity
               style={styles.item}
               activeOpacity={0.8}

@@ -1,5 +1,5 @@
 import React, { createElement, memo, type ComponentType } from 'react';
-import type { Route } from '../../../src/tabView.types';
+import type { Route } from '../tabView.types';
 
 const SceneComponent = memo(
   <T extends { component: ComponentType<any>; route: Route<any> }>({

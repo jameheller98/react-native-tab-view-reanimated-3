@@ -21,74 +21,74 @@ import type {
 
 const AnimatedPagerView = Animated.createAnimatedComponent(PagerView);
 
-const TabView = forwardRef(
-  <T,>(
-    { routes, renderScene, lazy = false, defaultIndexTab = 0 }: TTabView<T>,
-    ref: ForwardedRef<RTabView>
-  ) => {
-    const paperViewRef = useRef<PagerViewInternal>(null);
-    const {
-      position,
-      currentIndex,
-      isPageScrollState,
-      handlePageScroll,
-      handlePageScrollStateChanged,
-      handlePageSelected,
-    } = useTabViewHook({ defaultIndexTab });
+export const TabView = memo(
+  forwardRef(
+    <T,>(
+      { routes, renderScene, lazy = false, defaultIndexTab = 0 }: TTabView<T>,
+      ref: ForwardedRef<RTabView>
+    ) => {
+      const paperViewRef = useRef<PagerViewInternal>(null);
+      const {
+        position,
+        currentIndex,
+        isPageScrollState,
+        handlePageScroll,
+        handlePageScrollStateChanged,
+        handlePageSelected,
+      } = useTabViewHook({ defaultIndexTab });
 
-    useImperativeHandle(ref, () => {
-      return {
-        setIndexTab: (indexTab: number) => {
-          if (!paperViewRef.current) return;
+      useImperativeHandle(ref, () => {
+        return {
+          setIndexTab: (indexTab: number) => {
+            if (!paperViewRef.current) return;
 
-          paperViewRef.current.setPage(indexTab);
-        },
-      };
-    }, []);
+            paperViewRef.current.setPage(indexTab);
+          },
+        };
+      }, []);
 
-    return (
-      <View style={styles.container}>
-        <TabBar
-          routes={routes}
-          position={position}
-          currentIndex={currentIndex}
-          paperViewRef={paperViewRef}
-          isPageScrollState={isPageScrollState}
-        />
-        <AnimatedPagerView
-          //@ts-ignore
-          ref={paperViewRef}
-          style={styles.pagerView}
-          initialPage={defaultIndexTab}
-          offscreenPageLimit={1}
-          onPageScroll={handlePageScroll}
-          onPageSelected={handlePageSelected}
-          onPageScrollStateChanged={handlePageScrollStateChanged}
-        >
-          {routes.map((item, index) => (
-            <View key={item.key}>
-              <Scene
-                renderScene={
-                  renderScene as ({
-                    route,
-                  }: {
-                    route: Route<any>;
-                  }) => ReactElement<T>
-                }
-                item={item}
-                lazy={lazy}
-                currentIndex={currentIndex}
-                index={index}
-              />
-            </View>
-          ))}
-        </AnimatedPagerView>
-      </View>
-    );
-  }
+      return (
+        <View style={styles.container}>
+          <TabBar
+            routes={routes}
+            position={position}
+            currentIndex={currentIndex}
+            paperViewRef={paperViewRef}
+            isPageScrollState={isPageScrollState}
+          />
+          <AnimatedPagerView
+            //@ts-ignore
+            ref={paperViewRef}
+            style={styles.pagerView}
+            initialPage={defaultIndexTab}
+            offscreenPageLimit={1}
+            onPageScroll={handlePageScroll}
+            onPageSelected={handlePageSelected}
+            onPageScrollStateChanged={handlePageScrollStateChanged}
+          >
+            {routes.map((item, index) => (
+              <View key={item.key}>
+                <Scene
+                  renderScene={
+                    renderScene as ({
+                      route,
+                    }: {
+                      route: Route<any>;
+                    }) => ReactElement<T>
+                  }
+                  item={item}
+                  lazy={lazy}
+                  currentIndex={currentIndex}
+                  index={index}
+                />
+              </View>
+            ))}
+          </AnimatedPagerView>
+        </View>
+      );
+    }
+  )
 );
-
-export default memo(TabView);
 
 const styles = StyleSheet.create({
   container: {

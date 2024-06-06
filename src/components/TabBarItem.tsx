@@ -16,7 +16,7 @@ const TabBarItem = ({
 }) => {
   const styleAnimatedText = useAnimatedStyle(() => {
     return {
-      fontWeight: Math.round(position.value) === index ? 700 : 400,
+      fontWeight: Math.round(position.value) === index ? '700' : '400',
     };
   }, []);
 

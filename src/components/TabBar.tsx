@@ -12,7 +12,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import type { Route, TMeasure, TTabBar } from '../tabView.types';
 import { getMeasure } from '../tabViewUtils';
-import TabBarItem from './TabBarItem';
+import { TabBarItem } from './TabBarItem';
 
 const { width: widthWindow } = Dimensions.get('window');
 const HEIGHT_INDICATOR = 5;

@@ -10,7 +10,7 @@ import { StyleSheet, View } from 'react-native';
 import PagerView from 'react-native-pager-view';
 import Animated from 'react-native-reanimated';
 import Scene from './components/Scene';
-import TabBar from './components/TabBar';
+import { TabBar } from './components/TabBar';
 import useTabViewHook from './hooks/useTabViewHook';
 import type {
   PagerViewInternal,
@@ -24,7 +24,13 @@ const AnimatedPagerView = Animated.createAnimatedComponent(PagerView);
 export const TabView = memo(
   forwardRef(
     <T,>(
-      { routes, renderScene, lazy = false, defaultIndexTab = 0 }: TTabView<T>,
+      {
+        routes,
+        renderTabBar,
+        renderScene,
+        lazy = false,
+        defaultIndexTab = 0,
+      }: TTabView<T>,
       ref: ForwardedRef<RTabView>
     ) => {
       const paperViewRef = useRef<PagerViewInternal>(null);
@@ -49,13 +55,23 @@ export const TabView = memo(
 
       return (
         <View style={styles.container}>
-          <TabBar
-            routes={routes}
-            position={position}
-            currentIndex={currentIndex}
-            paperViewRef={paperViewRef}
-            isPageScrollState={isPageScrollState}
-          />
+          {renderTabBar ? (
+            renderTabBar({
+              routes,
+              position,
+              currentIndex,
+              paperViewRef,
+              isPageScrollState,
+            })
+          ) : (
+            <TabBar
+              routes={routes}
+              position={position}
+              currentIndex={currentIndex}
+              paperViewRef={paperViewRef}
+              isPageScrollState={isPageScrollState}
+            />
+          )}
           <AnimatedPagerView
             //@ts-ignore
             ref={paperViewRef}

@@ -1,14 +1,9 @@
 import * as React from 'react';
 
 import { StyleSheet, View } from 'react-native';
-import { TabView } from 'react-native-tab-view-reanimated-3';
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <TabView color="#32a852" style={styles.box} />
-    </View>
-  );
+  return <View style={styles.container} />;
 }
 
 const styles = StyleSheet.create({

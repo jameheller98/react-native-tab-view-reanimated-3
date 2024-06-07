@@ -1,19 +1,15 @@
 import React, { memo } from 'react';
-import { StyleSheet } from 'react-native';
-import Animated, {
-  useAnimatedStyle,
-  type SharedValue,
-} from 'react-native-reanimated';
+import { StyleSheet, TouchableOpacity } from 'react-native';
+import Animated, { useAnimatedStyle } from 'react-native-reanimated';
+import type { TTabBarItem } from '../tabView.types';
 
 const TabBarItem = ({
   title,
   position,
   index,
-}: {
-  title: string;
-  position: SharedValue<number>;
-  index: number;
-}) => {
+  handlePressItem,
+  refsArray,
+}: TTabBarItem) => {
   const styleAnimatedText = useAnimatedStyle(() => {
     return {
       fontWeight: Math.round(position.value) === index ? '700' : '400',
@@ -21,14 +17,25 @@ const TabBarItem = ({
   }, []);
 
   return (
-    <Animated.Text style={[styles.text, styleAnimatedText]}>
-      {title}
-    </Animated.Text>
+    <TouchableOpacity
+      style={styles.item}
+      activeOpacity={0.8}
+      hitSlop={10}
+      onPress={() => handlePressItem(index)}
+      ref={(ref) => {
+        refsArray.current[index] = ref;
+      }}
+    >
+      <Animated.Text style={styleAnimatedText}>{title}</Animated.Text>
+    </TouchableOpacity>
   );
 };
 
 export default memo(TabBarItem);
 
 const styles = StyleSheet.create({
-  text: {},
+  item: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });

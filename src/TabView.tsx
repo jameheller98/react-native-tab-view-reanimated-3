@@ -83,7 +83,7 @@ export const TabView = memo(
             onPageScrollStateChanged={handlePageScrollStateChanged}
           >
             {routes.map((item, index) => (
-              <View key={item.key}>
+              <View key={item.key} style={styles.item}>
                 <Scene
                   renderScene={
                     renderScene as ({
@@ -111,6 +111,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   pagerView: {
+    flex: 1,
+  },
+  item: {
     flex: 1,
   },
 });

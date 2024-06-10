@@ -84,7 +84,7 @@ export const TabBar = memo(
         if (refsArray.current.length === routes.length) {
           getMeasure(refsArray, arrMeasure);
 
-          if (arrMeasure.length > 0) {
+          if (arrMeasure.length > 1) {
             tabsMeasure.value = [...arrMeasure];
             arrMeasure.length = 0;
             return;

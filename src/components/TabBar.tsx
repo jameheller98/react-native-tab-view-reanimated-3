@@ -125,6 +125,7 @@ export const TabBar = memo(
               styles.containerIndicator,
               hiddenIndicator && styles.containerHiddenIndicator,
             ]}
+            onLayout={handleLayout}
           >
             {routes.map((item: Route<T>, index: number) =>
               renderTabBarItem ? (

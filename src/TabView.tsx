@@ -30,6 +30,7 @@ export const TabView = memo(
         renderScene,
         lazy = false,
         defaultIndexTab = 0,
+        scrollEnabled = true,
       }: TTabView<T>,
       ref: ForwardedRef<RTabView>
     ) => {
@@ -75,6 +76,7 @@ export const TabView = memo(
           <AnimatedPagerView
             //@ts-ignore
             ref={paperViewRef}
+            scrollEnabled={scrollEnabled}
             style={styles.pagerView}
             initialPage={defaultIndexTab}
             offscreenPageLimit={1}

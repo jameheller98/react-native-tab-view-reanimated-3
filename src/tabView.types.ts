@@ -54,6 +54,7 @@ export type TTabView<T> = {
   renderScene: ({ route }: { route: Route<T> }) => ReactElement<T>;
   lazy?: boolean;
   defaultIndexTab?: number;
+  scrollEnabled?: boolean;
 };
 
 export type RTabView = {

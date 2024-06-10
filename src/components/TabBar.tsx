@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useRef } from 'react';
+import React, { memo, useCallback, useEffect, useRef } from 'react';
 import { Dimensions, StyleSheet, Text, View } from 'react-native';
 import Animated, {
   interpolate,
@@ -86,7 +86,10 @@ export const TabBar = memo(
 
           if (arrMeasure.length > 0) {
             tabsMeasure.value = [...arrMeasure];
-
+            arrMeasure.length = 0;
+            return;
+          } else if (arrMeasure.length === 1 && arrMeasure[0]) {
+            tabsMeasure.value = [{ ...arrMeasure[0], pageX: 0 }];
             arrMeasure.length = 0;
             return;
           }
@@ -98,6 +101,10 @@ export const TabBar = memo(
       getAllMeasure();
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [routes.length]);
+
+    useEffect(() => {
+      handleLayout();
+    }, [handleLayout]);
 
     const handleChangeTab = useCallback((index: number) => {
       'worklet';
@@ -118,7 +125,6 @@ export const TabBar = memo(
               styles.containerIndicator,
               hiddenIndicator && styles.containerHiddenIndicator,
             ]}
-            onContentSizeChange={handleLayout}
           >
             {routes.map((item: Route<T>, index: number) =>
               renderTabBarItem ? (
@@ -153,6 +159,7 @@ export const TabBar = memo(
 const styles = StyleSheet.create({
   containerIndicator: {
     paddingBottom: HEIGHT_INDICATOR,
+    flexGrow: 1,
   },
   containerHiddenIndicator: {
     paddingBottom: 0,

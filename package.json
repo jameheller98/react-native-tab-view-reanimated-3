@@ -1,6 +1,6 @@
 {
   "name": "react-native-tab-view-reanimated-3",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "A package create tab view in react native",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",

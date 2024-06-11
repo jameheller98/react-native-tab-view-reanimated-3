@@ -71,8 +71,8 @@ export const TabBar = memo(
       scrollTo(refScrollView, translateX - (widthWindow - width) / 2, 0, true);
 
       return {
-        width: withSpring(width),
-        transform: [{ translateX: withSpring(translateX) }],
+        width: withSpring(width, { mass: 0.6 }),
+        transform: [{ translateX: withSpring(translateX, { mass: 0.6 }) }],
       };
     }, []);
 

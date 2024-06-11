@@ -5,8 +5,10 @@ import { usePagerScrollHandler } from './usePagerScrollHandler';
 
 export default function useTabViewHook({
   defaultIndexTab,
+  onChangeTab,
 }: {
   defaultIndexTab: number;
+  onChangeTab?: (currentIndexTab: number) => void;
 }) {
   const position = useSharedValue(defaultIndexTab);
   const currentIndex = useSharedValue(defaultIndexTab);
@@ -42,6 +44,7 @@ export default function useTabViewHook({
       >
     ): void | Promise<void> => {
       currentIndex.value = e.nativeEvent.position;
+      onChangeTab && onChangeTab(e.nativeEvent.position);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []

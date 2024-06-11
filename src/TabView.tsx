@@ -26,11 +26,12 @@ export const TabView = memo(
     <T,>(
       {
         routes,
-        renderTabBar,
-        renderScene,
         lazy = false,
         defaultIndexTab = 0,
         scrollEnabled = true,
+        renderTabBar,
+        renderScene,
+        onChangeTab,
       }: TTabView<T>,
       ref: ForwardedRef<RTabView>
     ) => {
@@ -42,7 +43,7 @@ export const TabView = memo(
         handlePageScroll,
         handlePageScrollStateChanged,
         handlePageSelected,
-      } = useTabViewHook({ defaultIndexTab });
+      } = useTabViewHook({ defaultIndexTab, onChangeTab });
 
       useImperativeHandle(ref, () => {
         return {

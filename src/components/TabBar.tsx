@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useRef } from 'react';
-import { Dimensions, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Animated, {
   interpolate,
   runOnJS,
@@ -26,9 +26,10 @@ export const TabBar = memo(
     isPageScrollState,
     hiddenIndicator = false,
     renderTabBarItem,
+    renderIndicator,
   }: TTabBar<T>) => {
     const refScrollView = useAnimatedRef<Animated.ScrollView>();
-    const refsArray = useRef<Array<Text | null>>([]);
+    const refsArray = useRef<Array<View | null>>([]);
     const tabsMeasure = useSharedValue<TMeasure[]>(
       routes.map(() => ({
         x: 0,
@@ -127,28 +128,36 @@ export const TabBar = memo(
             ]}
             onLayout={handleLayout}
           >
-            {routes.map((item: Route<T>, index: number) =>
-              renderTabBarItem ? (
-                renderTabBarItem({
-                  index,
-                  position,
-                  refsArray,
-                  title: item.title,
-                  handlePressItem: handleChangeTab,
-                })
-              ) : (
-                <TabBarItem
-                  key={item.key}
-                  title={item.title}
-                  position={position}
-                  index={index}
-                  refsArray={refsArray}
-                  handlePressItem={handleChangeTab}
-                />
-              )
-            )}
+            {routes.map((item: Route<T>, index: number) => (
+              <TouchableOpacity
+                key={item.key}
+                style={styles.item}
+                activeOpacity={0.8}
+                hitSlop={10}
+                onPress={() => handleChangeTab(index)}
+                ref={(ref) => {
+                  refsArray.current[index] = ref;
+                }}
+              >
+                {renderTabBarItem ? (
+                  renderTabBarItem({ title: item.title, position, index })
+                ) : (
+                  <TabBarItem
+                    title={item.title}
+                    position={position}
+                    index={index}
+                  />
+                )}
+              </TouchableOpacity>
+            ))}
             {!hiddenIndicator && (
-              <Animated.View style={[styles.indicator, animatedIndicator]} />
+              <Animated.View style={[styles.indicator, animatedIndicator]}>
+                {renderIndicator ? (
+                  renderIndicator()
+                ) : (
+                  <View style={styles.drawIndicator} />
+                )}
+              </Animated.View>
             )}
           </Animated.ScrollView>
         )}
@@ -172,7 +181,11 @@ const styles = StyleSheet.create({
   indicator: {
     height: HEIGHT_INDICATOR,
     position: 'absolute',
-    backgroundColor: 'black',
     bottom: 0,
+  },
+  drawIndicator: {
+    height: '100%',
+    width: '100%',
+    backgroundColor: 'black',
   },
 });

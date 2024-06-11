@@ -50,11 +50,12 @@ export type TMeasure = {
 
 export type TTabView<T> = {
   routes: Route<T>[];
-  renderTabBar?: (props: TTabBar<T>) => ReactElement<T>;
-  renderScene: ({ route }: { route: Route<T> }) => ReactElement<T>;
   lazy?: boolean;
   defaultIndexTab?: number;
   scrollEnabled?: boolean;
+  renderTabBar?: (props: TTabBar<T>) => ReactElement<T>;
+  renderScene: ({ route }: { route: Route<T> }) => ReactElement<T>;
+  onChangeTab?: (currentIndexTab: number) => void;
 };
 
 export type RTabView = {
@@ -69,12 +70,11 @@ export type TTabBar<T> = {
   isPageScrollState: SharedValue<'idle' | 'dragging' | 'settling'>;
   hiddenIndicator?: boolean;
   renderTabBarItem?: (props: TTabBarItem) => ReactElement<T>;
+  renderIndicator?: () => ReactElement<T>;
 };
 
 export type TTabBarItem = {
   title: string;
   position: SharedValue<number>;
   index: number;
-  handlePressItem: (index: number) => void;
-  refsArray: MutableRefObject<(Text | null)[]>;
 };

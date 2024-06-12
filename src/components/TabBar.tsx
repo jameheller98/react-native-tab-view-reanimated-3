@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useRef } from 'react';
+import React, { memo, useCallback, useRef } from 'react';
 import { Dimensions, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Animated, {
   interpolate,
@@ -103,10 +103,6 @@ export const TabBar = memo(
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [routes.length]);
 
-    useEffect(() => {
-      handleLayout();
-    }, [handleLayout]);
-
     const handleChangeTab = useCallback((index: number) => {
       'worklet';
       if (isPageScrollState.value === 'idle') {
@@ -126,7 +122,6 @@ export const TabBar = memo(
               styles.containerIndicator,
               hiddenIndicator && styles.containerHiddenIndicator,
             ]}
-            onLayout={handleLayout}
           >
             {routes.map((item: Route<T>, index: number) => (
               <TouchableOpacity
@@ -138,6 +133,9 @@ export const TabBar = memo(
                 ref={(ref) => {
                   refsArray.current[index] = ref;
                 }}
+                onLayout={
+                  index === routes.length - 1 ? handleLayout : undefined
+                }
               >
                 {renderTabBarItem ? (
                   renderTabBarItem({ title: item.title, position, index })

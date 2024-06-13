@@ -1,8 +1,8 @@
 import React, { createElement, memo, type ComponentType } from 'react';
-import type { Route } from '../tabView.types';
+import type { IRoute } from '../tabView.types';
 
 const SceneComponent = memo(
-  <T extends { component: ComponentType<any>; route: Route<any> }>({
+  <T extends { component: ComponentType<any>; route: IRoute<T> }>({
     component,
     ...rest
   }: T) => {
@@ -13,7 +13,7 @@ const SceneComponent = memo(
 export function SceneMap<T extends any>(scenes: {
   [key: string]: React.ComponentType<T>;
 }) {
-  return ({ route }: { route: Route<any> }) => (
+  return ({ route }: { route: IRoute<T> }) => (
     <SceneComponent
       key={route.key}
       component={scenes[route.key] as ComponentType<any>}

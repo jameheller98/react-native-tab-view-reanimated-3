@@ -1,31 +1,29 @@
-import { memo, useState, type ReactElement } from 'react';
-import {
-  runOnJS,
-  useAnimatedReaction,
-  type SharedValue,
-} from 'react-native-reanimated';
-import type { Route } from '../tabView.types';
+import { memo, useState } from 'react';
+import { runOnJS, useAnimatedReaction } from 'react-native-reanimated';
+import type { TScene } from '../tabView.types';
 
-const Scene = <T,>({
+function Scene<T>({
   renderScene,
   item,
   lazy,
-  currentIndex,
   index,
-}: {
-  renderScene: ({ route }: { route: Route<T> }) => ReactElement<T>;
-  item: Route<T>;
-  lazy: boolean;
-  currentIndex: SharedValue<number>;
-  index: number;
-}) => {
+  currentIndex,
+  pageScrollState,
+}: TScene<T>) {
   const [isRender, setIsRender] = useState(!lazy);
 
   useAnimatedReaction(
-    () => currentIndex.value,
+    () => ({
+      currentIndex: currentIndex.value,
+      pageScrollState: pageScrollState.value,
+    }),
     (cur) => {
       if (lazy) {
-        if (cur === index && !isRender) {
+        if (
+          cur.currentIndex === index &&
+          !isRender &&
+          cur.pageScrollState === 'idle'
+        ) {
           runOnJS(setIsRender)(true);
         }
       }
@@ -34,6 +32,6 @@ const Scene = <T,>({
   );
 
   return isRender ? renderScene({ route: item }) : null;
-};
+}
 
-export default memo(Scene);
+export default memo(Scene) as typeof Scene;

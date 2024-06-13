@@ -10,7 +10,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
-import type { Route, TMeasure, TTabBar } from '../tabView.types';
+import type { IRoute, TMeasure, TTabBar } from '../tabView.types';
 import { getMeasure } from '../tabViewUtils';
 import { TabBarItem } from './TabBarItem';
 
@@ -23,8 +23,9 @@ export const TabBar = memo(
     position,
     currentIndex,
     paperViewRef,
-    isPageScrollState,
+    pageScrollState,
     hiddenIndicator = false,
+    styleContainerList,
     renderTabBarItem,
     renderIndicator,
   }: TTabBar<T>) => {
@@ -105,7 +106,7 @@ export const TabBar = memo(
 
     const handleChangeTab = useCallback((index: number) => {
       'worklet';
-      if (isPageScrollState.value === 'idle') {
+      if (pageScrollState.value === 'idle') {
         runOnJS(paperViewRef.current?.setPage || ((_) => {}))(index);
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -121,9 +122,10 @@ export const TabBar = memo(
             contentContainerStyle={[
               styles.containerIndicator,
               hiddenIndicator && styles.containerHiddenIndicator,
+              styleContainerList,
             ]}
           >
-            {routes.map((item: Route<T>, index: number) => (
+            {routes.map((item: IRoute<T>, index: number) => (
               <TouchableOpacity
                 key={item.key}
                 style={styles.item}

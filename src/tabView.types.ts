@@ -1,5 +1,5 @@
 import type { Component, MutableRefObject, ReactElement } from 'react';
-import type { HostComponent } from 'react-native';
+import type { HostComponent, StyleProp, ViewStyle } from 'react-native';
 import type { NativeProps } from 'react-native-pager-view/lib/typescript/PagerViewNativeComponent/PagerViewNativeComponent';
 import type { SharedValue } from 'react-native-reanimated';
 
@@ -33,7 +33,7 @@ export declare class PagerViewInternal extends Component<NativeProps> {
   render(): JSX.Element;
 }
 
-export interface Route<T> {
+export interface IRoute<T> {
   key: string;
   title: string;
   data: T;
@@ -49,12 +49,12 @@ export type TMeasure = {
 };
 
 export type TTabView<T> = {
-  routes: Route<T>[];
+  routes: IRoute<T>[];
   lazy?: boolean;
   defaultIndexTab?: number;
   scrollEnabled?: boolean;
-  renderTabBar?: (props: TTabBar<T>) => ReactElement<T>;
-  renderScene: ({ route }: { route: Route<T> }) => ReactElement<T>;
+  renderTabBar?: (props: TTabBar<T>) => ReactElement;
+  renderScene: ({ route }: { route: IRoute<T> }) => ReactElement;
   onChangeTab?: (currentIndexTab: number) => void;
 };
 
@@ -63,18 +63,28 @@ export type RTabView = {
 };
 
 export type TTabBar<T> = {
-  routes: Route<T>[];
+  routes: IRoute<T>[];
   position: SharedValue<number>;
   currentIndex: SharedValue<number>;
   paperViewRef: MutableRefObject<PagerViewInternal | null>;
-  isPageScrollState: SharedValue<'idle' | 'dragging' | 'settling'>;
+  pageScrollState: SharedValue<'idle' | 'dragging' | 'settling'>;
   hiddenIndicator?: boolean;
-  renderTabBarItem?: (props: TTabBarItem) => ReactElement<T>;
-  renderIndicator?: () => ReactElement<T>;
+  styleContainerList?: StyleProp<ViewStyle>;
+  renderTabBarItem?: (props: TTabBarItem) => ReactElement;
+  renderIndicator?: () => ReactElement;
 };
 
 export type TTabBarItem = {
   title: string;
   position: SharedValue<number>;
   index: number;
+};
+
+export type TScene<T> = {
+  item: IRoute<T>;
+  lazy: boolean;
+  currentIndex: SharedValue<number>;
+  index: number;
+  pageScrollState: SharedValue<'idle' | 'dragging' | 'settling'>;
+  renderScene: ({ route }: { route: IRoute<T> }) => ReactElement;
 };

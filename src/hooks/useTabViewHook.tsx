@@ -12,7 +12,7 @@ export default function useTabViewHook({
 }) {
   const position = useSharedValue(defaultIndexTab);
   const currentIndex = useSharedValue(defaultIndexTab);
-  const isPageScrollState = useSharedValue<'idle' | 'dragging' | 'settling'>(
+  const pageScrollState = useSharedValue<'idle' | 'dragging' | 'settling'>(
     'idle'
   );
 
@@ -29,7 +29,7 @@ export default function useTabViewHook({
         Readonly<{ pageScrollState: 'idle' | 'dragging' | 'settling' }>
       >
     ) => {
-      isPageScrollState.value = e.nativeEvent.pageScrollState;
+      pageScrollState.value = e.nativeEvent.pageScrollState;
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
@@ -53,7 +53,7 @@ export default function useTabViewHook({
   return {
     position,
     currentIndex,
-    isPageScrollState,
+    pageScrollState,
     handlePageScroll,
     handlePageScrollStateChanged,
     handlePageSelected,

@@ -4,7 +4,6 @@ import React, {
   useImperativeHandle,
   useRef,
   type ForwardedRef,
-  type ReactElement,
 } from 'react';
 import { StyleSheet, View } from 'react-native';
 import PagerView from 'react-native-pager-view';
@@ -12,12 +11,7 @@ import Animated from 'react-native-reanimated';
 import Scene from './components/Scene';
 import { TabBar } from './components/TabBar';
 import useTabViewHook from './hooks/useTabViewHook';
-import type {
-  PagerViewInternal,
-  RTabView,
-  Route,
-  TTabView,
-} from './tabView.types';
+import type { PagerViewInternal, RTabView, TTabView } from './tabView.types';
 
 const AnimatedPagerView = Animated.createAnimatedComponent(PagerView);
 
@@ -39,7 +33,7 @@ export const TabView = memo(
       const {
         position,
         currentIndex,
-        isPageScrollState,
+        pageScrollState,
         handlePageScroll,
         handlePageScrollStateChanged,
         handlePageSelected,
@@ -63,7 +57,7 @@ export const TabView = memo(
               position,
               currentIndex,
               paperViewRef,
-              isPageScrollState,
+              pageScrollState,
             })
           ) : (
             <TabBar
@@ -71,7 +65,7 @@ export const TabView = memo(
               position={position}
               currentIndex={currentIndex}
               paperViewRef={paperViewRef}
-              isPageScrollState={isPageScrollState}
+              pageScrollState={pageScrollState}
             />
           )}
           <AnimatedPagerView
@@ -86,19 +80,14 @@ export const TabView = memo(
             onPageScrollStateChanged={handlePageScrollStateChanged}
           >
             {routes.map((item, index) => (
-              <View key={item.key} style={styles.item}>
-                <Scene
-                  renderScene={
-                    renderScene as ({
-                      route,
-                    }: {
-                      route: Route<any>;
-                    }) => ReactElement<T>
-                  }
+              <View key={item.key} style={styles.item} collapsable={false}>
+                <Scene<T>
                   item={item}
                   lazy={lazy}
-                  currentIndex={currentIndex}
                   index={index}
+                  currentIndex={currentIndex}
+                  pageScrollState={pageScrollState}
+                  renderScene={renderScene}
                 />
               </View>
             ))}

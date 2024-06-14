@@ -58,22 +58,34 @@ export const TabBar = memo(
         currentIndex.value,
         currentIndex.value + 1,
       ];
-      const width = interpolate(position.value, input, [
-        tabsMeasure.value[currentIndex.value - 1]?.width || 0,
-        tabsMeasure.value[currentIndex.value]?.width || 0,
-        tabsMeasure.value[currentIndex.value + 1]?.width || 0,
-      ]);
       const translateX = interpolate(position.value, input, [
         tabsMeasure.value[currentIndex.value - 1]?.pageX || 0,
         tabsMeasure.value[currentIndex.value]?.pageX || 0,
         tabsMeasure.value[currentIndex.value + 1]?.pageX || 0,
       ]);
+      const scaleX = interpolate(position.value, input, [
+        (tabsMeasure.value[currentIndex.value - 1]?.width || 0) / widthWindow,
+        (tabsMeasure.value[currentIndex.value]?.width || 0) / widthWindow,
+        (tabsMeasure.value[currentIndex.value + 1]?.width || 0) / widthWindow,
+      ]);
 
-      scrollTo(refScrollView, translateX - (widthWindow - width) / 2, 0, true);
+      scrollTo(
+        refScrollView,
+        translateX -
+          (widthWindow - (tabsMeasure.value[currentIndex.value]?.width || 0)) /
+            2,
+        0,
+        true
+      );
 
       return {
-        width: withSpring(width, { mass: 0.6 }),
-        transform: [{ translateX: withSpring(translateX, { mass: 0.6 }) }],
+        transform: [
+          {
+            translateX: withSpring(translateX - widthWindow / 2, { mass: 0.6 }),
+          },
+          { scaleX: withSpring(scaleX, { mass: 0.6 }) },
+          { translateX: widthWindow / 2 },
+        ],
       };
     }, []);
 

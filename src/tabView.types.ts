@@ -56,7 +56,7 @@ export type TTabView<T> = {
   renderTabBar?: (props: TTabBar<T>) => ReactElement;
   renderScene: ({ route }: { route: IRoute<T> }) => ReactElement;
   onChangeTab?: (currentIndexTab: number) => void;
-};
+} & Partial<Pick<TCollapseHeader, 'renderHeader'>>;
 
 export type RTabView = {
   setIndexTab: (indexTab: number) => void;
@@ -87,4 +87,9 @@ export type TScene<T> = {
   index: number;
   pageScrollState: SharedValue<'idle' | 'dragging' | 'settling'>;
   renderScene: ({ route }: { route: IRoute<T> }) => ReactElement;
+};
+
+export type TCollapseHeader = {
+  children: Element;
+  renderHeader: () => ReactElement;
 };

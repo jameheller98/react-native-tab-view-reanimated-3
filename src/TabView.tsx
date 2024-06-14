@@ -8,12 +8,31 @@ import React, {
 import { StyleSheet, View } from 'react-native';
 import PagerView from 'react-native-pager-view';
 import Animated from 'react-native-reanimated';
+import { withCollapseHeaderComponent } from './HOCs/withCollapseHeaderComponent';
 import Scene from './components/Scene';
-import { TabBar } from './components/TabBar';
+import WrapperTabBar from './components/WrapperTabBar';
+import {
+  SyncedScrollableContext,
+  syncedScrollableState,
+} from './contexts/SyncedScrollableContext';
 import useTabViewHook from './hooks/useTabViewHook';
-import type { PagerViewInternal, RTabView, TTabView } from './tabView.types';
+import type {
+  PagerViewInternal,
+  RTabView,
+  TTabBar,
+  TTabView,
+} from './tabView.types';
 
 const AnimatedPagerView = Animated.createAnimatedComponent(PagerView);
+
+const WrapperTabBarWithCollapseHeader = withCollapseHeaderComponent(
+  WrapperTabBar
+) as <T>(
+  props: TTabBar<T> &
+    Pick<TTabView<T>, 'renderTabBar' | 'renderHeader'> & {
+      isCollapseHeader?: boolean;
+    }
+) => React.ReactElement<T>;
 
 export const TabView = memo(
   forwardRef(
@@ -24,6 +43,7 @@ export const TabView = memo(
         defaultIndexTab = 0,
         scrollEnabled = true,
         renderTabBar,
+        renderHeader,
         renderScene,
         onChangeTab,
       }: TTabView<T>,
@@ -50,49 +70,43 @@ export const TabView = memo(
       }, []);
 
       return (
-        <View style={styles.container}>
-          {renderTabBar ? (
-            renderTabBar({
-              routes,
-              position,
-              currentIndex,
-              paperViewRef,
-              pageScrollState,
-            })
-          ) : (
-            <TabBar
+        <SyncedScrollableContext.Provider value={syncedScrollableState}>
+          <View style={styles.container}>
+            <WrapperTabBarWithCollapseHeader
+              renderTabBar={renderTabBar}
+              renderHeader={renderHeader}
               routes={routes}
               position={position}
               currentIndex={currentIndex}
               paperViewRef={paperViewRef}
               pageScrollState={pageScrollState}
             />
-          )}
-          <AnimatedPagerView
-            //@ts-ignore
-            ref={paperViewRef}
-            scrollEnabled={scrollEnabled}
-            style={styles.pagerView}
-            initialPage={defaultIndexTab}
-            offscreenPageLimit={1}
-            onPageScroll={handlePageScroll}
-            onPageSelected={handlePageSelected}
-            onPageScrollStateChanged={handlePageScrollStateChanged}
-          >
-            {routes.map((item, index) => (
-              <View key={item.key} style={styles.item} collapsable={false}>
-                <Scene<T>
-                  item={item}
-                  lazy={lazy}
-                  index={index}
-                  currentIndex={currentIndex}
-                  pageScrollState={pageScrollState}
-                  renderScene={renderScene}
-                />
-              </View>
-            ))}
-          </AnimatedPagerView>
-        </View>
+            <AnimatedPagerView
+              //@ts-ignore
+              ref={paperViewRef}
+              scrollEnabled={scrollEnabled}
+              style={styles.pagerView}
+              initialPage={defaultIndexTab}
+              offscreenPageLimit={1}
+              onPageScroll={handlePageScroll}
+              onPageSelected={handlePageSelected}
+              onPageScrollStateChanged={handlePageScrollStateChanged}
+            >
+              {routes.map((item, index) => (
+                <View key={item.key} style={styles.item} collapsable={false}>
+                  <Scene<T>
+                    item={item}
+                    lazy={lazy}
+                    index={index}
+                    currentIndex={currentIndex}
+                    pageScrollState={pageScrollState}
+                    renderScene={renderScene}
+                  />
+                </View>
+              ))}
+            </AnimatedPagerView>
+          </View>
+        </SyncedScrollableContext.Provider>
       );
     }
   )

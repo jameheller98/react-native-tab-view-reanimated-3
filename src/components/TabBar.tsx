@@ -1,5 +1,11 @@
 import React, { memo, useCallback, useRef } from 'react';
-import { Dimensions, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  Dimensions,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  type ViewStyle,
+} from 'react-native';
 import Animated, {
   interpolate,
   runOnJS,
@@ -9,6 +15,7 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
+  type AnimatedStyleProp,
 } from 'react-native-reanimated';
 import type { IRoute, TMeasure, TTabBar } from '../tabView.types';
 import { getMeasure } from '../tabViewUtils';
@@ -86,7 +93,7 @@ export const TabBar = memo(
           { scaleX: withSpring(scaleX, { mass: 0.6 }) },
           { translateX: widthWindow / 2 },
         ],
-      };
+      } as AnimatedStyleProp<ViewStyle>;
     }, []);
 
     const handleLayout = useCallback(() => {

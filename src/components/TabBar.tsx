@@ -180,7 +180,6 @@ export const TabBar = memo(
 
 const styles = StyleSheet.create({
   containerIndicator: {
-    width: widthWindow,
     paddingBottom: HEIGHT_INDICATOR,
     flexGrow: 1,
   },
@@ -192,6 +191,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   indicator: {
+    width: widthWindow,
     height: HEIGHT_INDICATOR,
     position: 'absolute',
     bottom: 0,

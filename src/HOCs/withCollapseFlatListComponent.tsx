@@ -45,5 +45,4 @@ function withCollapseScrollViewComponent(
   );
 }
 
-export const ScrollViewWithCollapse =
-  withCollapseScrollViewComponent(ScrollView);
+export const FlatListWithCollapse = withCollapseScrollViewComponent(ScrollView);

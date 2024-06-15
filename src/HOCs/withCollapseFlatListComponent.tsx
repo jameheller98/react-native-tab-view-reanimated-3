@@ -7,16 +7,16 @@ import React, {
   useRef,
   type ComponentClass,
 } from 'react';
-import { ScrollView, type ScrollViewProps } from 'react-native';
+import { FlatList, type FlatListProps } from 'react-native';
 import { runOnJS, useAnimatedReaction } from 'react-native-reanimated';
 import { SyncedScrollableContext } from '../contexts/SyncedScrollableContext';
 
-function withCollapseScrollViewComponent(
-  Component: ComponentClass<ScrollViewProps>
+function withCollapseFlatListComponent<T>(
+  Component: ComponentClass<FlatListProps<T>>
 ) {
   return memo(
-    forwardRef<ScrollView, ScrollViewProps & { id: string }>((props, ref) => {
-      const innerScrollRef = useRef<ScrollView>(null);
+    forwardRef<FlatList, FlatListProps<T> & { id: string }>((props, ref) => {
+      const innerScrollRef = useRef<FlatList>(null);
       const { id, ...rest } = props;
       const { activeScrollViewID } = useContext(SyncedScrollableContext);
 
@@ -45,4 +45,4 @@ function withCollapseScrollViewComponent(
   );
 }
 
-export const FlatListWithCollapse = withCollapseScrollViewComponent(ScrollView);
+export const FlatListWithCollapse = withCollapseFlatListComponent(FlatList);

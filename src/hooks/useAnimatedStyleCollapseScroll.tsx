@@ -12,10 +12,11 @@ export default function useAnimatedStyleCollapseScroll(
   const animatedStyleComponent = useAnimatedStyle(() => {
     return {
       paddingTop:
-        typeof contentContainerFlatten.paddingTop === 'number'
+        typeof contentContainerFlatten?.paddingTop === 'number' ||
+        contentContainerFlatten?.paddingTop === undefined
           ? heightHeader.value +
             heightTabBar.value +
-            contentContainerFlatten.paddingTop
+            (contentContainerFlatten?.paddingTop || 0)
           : contentContainerFlatten.paddingTop,
     };
   }, []);

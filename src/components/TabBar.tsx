@@ -37,7 +37,7 @@ export const TabBar = memo(
     renderIndicator,
   }: TTabBar<T>) => {
     const refScrollView = useAnimatedRef<Animated.ScrollView>();
-    const refsArray = useRef<Array<View | null>>([]);
+    const refsArray = useRef<Array<TouchableOpacity | null>>([]);
     const tabsMeasure = useSharedValue<TMeasure[]>(
       routes.map(() => ({
         x: 0,

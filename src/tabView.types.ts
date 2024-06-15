@@ -1,5 +1,16 @@
-import type { Component, MutableRefObject, ReactElement } from 'react';
-import type { HostComponent, StyleProp, ViewStyle } from 'react-native';
+import type {
+  Component,
+  ComponentClass,
+  MutableRefObject,
+  ReactElement,
+} from 'react';
+import type {
+  FlatListProps,
+  HostComponent,
+  ScrollViewProps,
+  StyleProp,
+  ViewStyle,
+} from 'react-native';
 import type { NativeProps } from 'react-native-pager-view/lib/typescript/PagerViewNativeComponent/PagerViewNativeComponent';
 import type { SharedValue } from 'react-native-reanimated';
 
@@ -93,3 +104,7 @@ export type TCollapseHeader = {
   children: Element;
   renderHeader: () => ReactElement;
 };
+
+export type ScrollableView<T> = ComponentClass<
+  FlatListProps<T> | ScrollViewProps
+>;

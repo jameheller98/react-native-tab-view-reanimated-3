@@ -57,7 +57,7 @@ export const TabView = memo(
         handlePageScroll,
         handlePageScrollStateChanged,
         handlePageSelected,
-      } = useTabViewHook({ defaultIndexTab, onChangeTab });
+      } = useTabViewHook<T>({ defaultIndexTab, routes, onChangeTab });
 
       useImperativeHandle(ref, () => {
         return {

@@ -1,15 +1,14 @@
 import React, {
   forwardRef,
   memo,
-  useCallback,
-  useContext,
   useImperativeHandle,
   useRef,
   type ComponentClass,
 } from 'react';
 import { FlatList, type FlatListProps } from 'react-native';
-import { runOnJS, useAnimatedReaction } from 'react-native-reanimated';
-import { SyncedScrollableContext } from '../contexts/SyncedScrollableContext';
+import Animated from 'react-native-reanimated';
+import useAnimatedStyleCollapseScroll from '../hooks/useAnimatedStyleCollapseScroll';
+import useEnabledScroll from '../hooks/useEnabledScroll';
 
 function withCollapseFlatListComponent<T>(
   Component: ComponentClass<FlatListProps<T>>
@@ -17,32 +16,28 @@ function withCollapseFlatListComponent<T>(
   return memo(
     forwardRef<FlatList, FlatListProps<T> & { id: string }>((props, ref) => {
       const innerScrollRef = useRef<FlatList>(null);
-      const { id, ...rest } = props;
-      const { activeScrollViewID } = useContext(SyncedScrollableContext);
+      const { id, contentContainerStyle, ...rest } = props;
 
       useImperativeHandle(ref, () => innerScrollRef.current!, []);
 
-      const handleEnabledScroll = useCallback((isScroll: boolean) => {
-        innerScrollRef.current?.setNativeProps({ scrollEnabled: isScroll });
-      }, []);
+      useEnabledScroll(innerScrollRef, id);
 
-      useAnimatedReaction(
-        () => activeScrollViewID.value,
-        (cur, prev) => {
-          if (prev === null) return;
-
-          if (cur === id) {
-            runOnJS(handleEnabledScroll)(true);
-          } else {
-            runOnJS(handleEnabledScroll)(false);
-          }
-        },
-        [id]
+      const animatedStyleComponent = useAnimatedStyleCollapseScroll(
+        contentContainerStyle
       );
 
-      return <Component ref={innerScrollRef} {...rest} />;
+      return (
+        <Component
+          ref={innerScrollRef}
+          {...rest}
+          style={[contentContainerStyle, animatedStyleComponent]}
+          scrollEventThrottle={16}
+        />
+      );
     })
   );
 }
 
-export const FlatListWithCollapse = withCollapseFlatListComponent(FlatList);
+export const FlatListWithCollapse = withCollapseFlatListComponent(
+  Animated.FlatList as any
+);

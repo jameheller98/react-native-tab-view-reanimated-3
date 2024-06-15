@@ -29,7 +29,7 @@ export default function useStyleContainerCollapseScroll(
             : contentContainerFlatten.paddingTop,
       },
     ],
-    [height, contentContainerStyle, contentContainerFlatten.paddingTop]
+    [height, contentContainerStyle, contentContainerFlatten?.paddingTop]
   );
 
   return styleContainerComponent;

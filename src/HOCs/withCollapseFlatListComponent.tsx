@@ -15,13 +15,15 @@ function withCollapseFlatListComponent<T>(
   return memo(
     forwardRef<FlatList, FlatListProps<T> & { id: string }>((props, ref) => {
       const innerScrollRef = useRef<FlatList>(null);
-      const { id, style, ...rest } = props;
+      const { id, contentContainerStyle, ...rest } = props;
 
       useImperativeHandle(ref, () => innerScrollRef.current!, []);
 
       useEnabledScroll(innerScrollRef, id);
 
-      const styleContainerComponent = useAnimatedStyleCollapseScroll(style);
+      const styleContainerComponent = useAnimatedStyleCollapseScroll(
+        contentContainerStyle
+      );
 
       return (
         <Component

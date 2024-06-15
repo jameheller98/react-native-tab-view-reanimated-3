@@ -15,13 +15,15 @@ function withCollapseScrollViewComponent(
   return memo(
     forwardRef<ScrollView, ScrollViewProps & { id: string }>((props, ref) => {
       const innerScrollRef = useRef<ScrollView>(null);
-      const { id, style, ...rest } = props;
+      const { id, contentContainerStyle, ...rest } = props;
 
       useImperativeHandle(ref, () => innerScrollRef.current!, []);
 
       useEnabledScroll(innerScrollRef, id);
 
-      const styleContainerComponent = useAnimatedStyleCollapseScroll(style);
+      const styleContainerComponent = useAnimatedStyleCollapseScroll(
+        contentContainerStyle
+      );
 
       return (
         <Component

@@ -21,6 +21,7 @@ function withCollapseScrollViewComponent(
       useImperativeHandle(ref, () => innerScrollRef.current!, []);
 
       useEnabledScroll(innerScrollRef, id);
+
       const animatedStyleComponent = useAnimatedStyleCollapseScroll(
         contentContainerStyle
       );

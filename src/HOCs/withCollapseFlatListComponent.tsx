@@ -6,9 +6,8 @@ import React, {
   type ComponentClass,
 } from 'react';
 import { FlatList, type FlatListProps } from 'react-native';
-import Animated from 'react-native-reanimated';
-import useAnimatedStyleCollapseScroll from '../hooks/useAnimatedStyleCollapseScroll';
 import useEnabledScroll from '../hooks/useEnabledScroll';
+import useAnimatedStyleCollapseScroll from '../hooks/useStyleContainerCollapseScroll';
 
 function withCollapseFlatListComponent<T>(
   Component: ComponentClass<FlatListProps<T>>
@@ -16,21 +15,19 @@ function withCollapseFlatListComponent<T>(
   return memo(
     forwardRef<FlatList, FlatListProps<T> & { id: string }>((props, ref) => {
       const innerScrollRef = useRef<FlatList>(null);
-      const { id, contentContainerStyle, ...rest } = props;
+      const { id, style, ...rest } = props;
 
       useImperativeHandle(ref, () => innerScrollRef.current!, []);
 
       useEnabledScroll(innerScrollRef, id);
 
-      const animatedStyleComponent = useAnimatedStyleCollapseScroll(
-        contentContainerStyle
-      );
+      const styleContainerComponent = useAnimatedStyleCollapseScroll(style);
 
       return (
         <Component
           ref={innerScrollRef}
           {...rest}
-          style={[contentContainerStyle, animatedStyleComponent]}
+          contentContainerStyle={styleContainerComponent}
           scrollEventThrottle={16}
         />
       );
@@ -38,6 +35,4 @@ function withCollapseFlatListComponent<T>(
   );
 }
 
-export const FlatListWithCollapse = withCollapseFlatListComponent(
-  Animated.FlatList as any
-);
+export const FlatListWithCollapse = withCollapseFlatListComponent(FlatList);

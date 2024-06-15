@@ -6,9 +6,8 @@ import React, {
   type ComponentClass,
 } from 'react';
 import { ScrollView, type ScrollViewProps } from 'react-native';
-import Animated from 'react-native-reanimated';
-import useAnimatedStyleCollapseScroll from '../hooks/useAnimatedStyleCollapseScroll';
 import useEnabledScroll from '../hooks/useEnabledScroll';
+import useAnimatedStyleCollapseScroll from '../hooks/useStyleContainerCollapseScroll';
 
 function withCollapseScrollViewComponent(
   Component: ComponentClass<ScrollViewProps>
@@ -16,21 +15,19 @@ function withCollapseScrollViewComponent(
   return memo(
     forwardRef<ScrollView, ScrollViewProps & { id: string }>((props, ref) => {
       const innerScrollRef = useRef<ScrollView>(null);
-      const { id, contentContainerStyle, ...rest } = props;
+      const { id, style, ...rest } = props;
 
       useImperativeHandle(ref, () => innerScrollRef.current!, []);
 
       useEnabledScroll(innerScrollRef, id);
 
-      const animatedStyleComponent = useAnimatedStyleCollapseScroll(
-        contentContainerStyle
-      );
+      const styleContainerComponent = useAnimatedStyleCollapseScroll(style);
 
       return (
         <Component
           ref={innerScrollRef}
           {...rest}
-          style={[contentContainerStyle, animatedStyleComponent]}
+          contentContainerStyle={styleContainerComponent}
           scrollEventThrottle={16}
         />
       );
@@ -38,6 +35,5 @@ function withCollapseScrollViewComponent(
   );
 }
 
-export const ScrollViewWithCollapse = withCollapseScrollViewComponent(
-  Animated.ScrollView
-);
+export const ScrollViewWithCollapse =
+  withCollapseScrollViewComponent(ScrollView);

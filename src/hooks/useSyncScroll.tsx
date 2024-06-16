@@ -12,15 +12,18 @@ export default function useSyncScroll(
   id: string,
   offsetCurrentScroll: SharedValue<number>
 ) {
-  const { activeScrollViewID, offsetActiveScrollView } = useContext(
-    SyncedScrollableContext
-  );
+  const { activeScrollViewID, offsetActiveScrollView, heightHeader } =
+    useContext(SyncedScrollableContext);
 
   const handleSyncScroll = useCallback(
-    (offsetActiveScrollValue: number, offsetCurrentScrollValue: number) => {
+    (
+      offsetActiveScrollValue: number,
+      offsetCurrentScrollValue: number,
+      heightHeaderValue: number
+    ) => {
       if (
         offsetCurrentScrollValue >= 0 &&
-        offsetCurrentScrollValue <= offsetActiveScrollValue
+        offsetCurrentScrollValue <= heightHeaderValue
       ) {
         (innerScrollRef.current as ScrollView)?.scrollTo({
           animated: false,
@@ -42,7 +45,8 @@ export default function useSyncScroll(
       if (cur === id) {
         runOnJS(handleSyncScroll)(
           offsetActiveScrollView.value,
-          offsetCurrentScroll.value
+          offsetCurrentScroll.value,
+          heightHeader.value
         );
       }
     },

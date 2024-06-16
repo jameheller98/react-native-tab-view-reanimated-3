@@ -14,11 +14,14 @@ export default function useHandleScroll(
   );
 
   const scrollHandler = useAnimatedScrollHandler((event) => {
-    offsetActiveScrollView.value = clamp(
-      event.contentOffset.y,
-      0,
-      heightHeader.value
-    );
+    if (offsetCurrentScroll.value <= offsetActiveScrollView.value) {
+      offsetActiveScrollView.value = clamp(
+        event.contentOffset.y,
+        0,
+        heightHeader.value
+      );
+    }
+
     offsetCurrentScroll.value = event.contentOffset.y;
   });
 

@@ -9,6 +9,7 @@ import { ScrollView } from 'react-native';
 import Animated, { useSharedValue } from 'react-native-reanimated';
 import useEnabledScroll from '../hooks/useEnabledScroll';
 import useHandleScroll from '../hooks/useHandleScroll';
+import useInitScroll from '../hooks/useInitScrollView';
 import useAnimatedStyleCollapseScroll from '../hooks/useStyleContainerCollapseScroll';
 import useSyncScroll from '../hooks/useSyncScroll';
 
@@ -34,11 +35,14 @@ function withCollapseScrollViewComponent(
 
         const handleScroll = useHandleScroll(offsetCurrentScroll);
 
+        const handleInitScroll = useInitScroll(innerScrollRef, id);
+
         return (
           <Component
             ref={innerScrollRef}
             {...rest}
             onScroll={handleScroll}
+            onLayout={handleInitScroll}
             contentContainerStyle={styleContainerComponent}
             scrollEventThrottle={16}
           />

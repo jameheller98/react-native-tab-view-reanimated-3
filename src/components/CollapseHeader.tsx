@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, type ReactNode } from 'react';
 import { StyleSheet, View, type LayoutChangeEvent } from 'react-native';
 import Animated, {
-  Extrapolate,
+  Extrapolation,
   interpolate,
   useAnimatedStyle,
 } from 'react-native-reanimated';
@@ -25,7 +25,7 @@ const CollapseHeader = ({ children, renderHeader }: TCollapseHeader) => {
       offsetActiveScrollView.value,
       [0, heightHeader.value],
       [0, -heightHeader.value],
-      Extrapolate.CLAMP
+      Extrapolation.CLAMP
     );
 
     return {

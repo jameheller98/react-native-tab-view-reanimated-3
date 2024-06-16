@@ -1,12 +1,25 @@
 import { useContext } from 'react';
-import { useAnimatedScrollHandler } from 'react-native-reanimated';
+import {
+  useAnimatedScrollHandler,
+  type SharedValue,
+} from 'react-native-reanimated';
 import { SyncedScrollableContext } from '../contexts/SyncedScrollableContext';
+import { clamp } from '../tabViewUtils';
 
-export default function useHandleScroll() {
-  const { offsetActiveScrollView } = useContext(SyncedScrollableContext);
+export default function useHandleScroll(
+  offsetCurrentScroll: SharedValue<number>
+) {
+  const { offsetActiveScrollView, heightHeader } = useContext(
+    SyncedScrollableContext
+  );
 
   const scrollHandler = useAnimatedScrollHandler((event) => {
-    offsetActiveScrollView.value = event.contentOffset.y;
+    offsetActiveScrollView.value = clamp(
+      event.contentOffset.y,
+      0,
+      heightHeader.value
+    );
+    offsetCurrentScroll.value = event.contentOffset.y;
   });
 
   return scrollHandler;

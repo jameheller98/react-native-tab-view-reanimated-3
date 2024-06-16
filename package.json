@@ -1,6 +1,6 @@
 {
   "name": "react-native-tab-view-reanimated-3",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A package create tab view in react native",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -37,7 +37,14 @@
   "keywords": [
     "react-native",
     "ios",
-    "android"
+    "android",
+    "tab-view",
+    "tab",
+    "swipe",
+    "scrollable",
+    "head",
+    "collapsible-header",
+    "reanimated3"
   ],
   "repository": {
     "type": "git",

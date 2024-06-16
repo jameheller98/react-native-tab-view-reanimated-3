@@ -1,23 +1,30 @@
 # react-native-tab-view-reanimated-3
 
-A package create tab view in react native
+A package create tab view in react native, using react-native-pager-view on Android & iOS and reanimated 3 for animation, support collapse tab view header, basic using below.
 
 ## Installation
 
 ```sh
-npm install react-native-tab-view-reanimated-3
+npm install react-native-tab-view-reanimated-3 react-native-pager-view
 ```
 
-## Usage
+or
+
+```sh
+yarn add react-native-tab-view-reanimated-3 react-native-pager-view
+```
+
+Then sure Reanimated is installed by [follow the official installation guide.](https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/getting-started/)
+
+## Quick start
 
 ```js
-import { TabView, SceneMap, RTabView, Route } from "react-native-tab-view-reanimated-3";
+import { TabView, SceneMap, RTabView, IRoute } from "react-native-tab-view-reanimated-3";
 
-const Tab1 = () => (
-  <View style={{ flex: 1, borderWidth: 2, borderColor: 'red' }}>
-  </View>
-)
-const Tab2 = () => <View style={{ flex: 1, borderWidth: 2, borderColor: 'blue' }}></View>
+type TRouteData = number
+
+const Tab1 = ({route} : {route:IRoute<TRouteData>}) => <View style={{ flex: 1, backgroundColor: 'gray' }}></View>
+const Tab2 = ({route} : {route:IRoute<TRouteData>}) => <View style={{ flex: 1, backgroundColor: 'purple' }}></View>
 
 const scenes = SceneMap({
   "1": Tab1,
@@ -28,9 +35,9 @@ const scenes = SceneMap({
 
 export const Test:FC<any> = () => {
   const refTabView = useRef<RTabView>(null)
-  const [routes] = useState<Route<number>[]>([
+  const [routes] = useState<IRoute<TRouteData>[]>([
     { key: "1", title: "Tab 1", data: 0 },
-    { key: "2", title: "Tab 2 2", data: 1 },
+    { key: "2", title: "Tab 2", data: 1 },
   ])
 
   return (
@@ -40,6 +47,56 @@ export const Test:FC<any> = () => {
   )
 }
 ```
+
+## API Reference
+
+|       name        |                type                 | default |                     description                     |
+| :---------------: | :---------------------------------: | :-----: | :-------------------------------------------------: |
+|     `routes`      |            `IRoute<T>[]`            |         | Data route to render tab bar and view (is required) |
+| `defaultIndexTab` |              `number`               |    0    |             Default tab index when init             |
+|  `scrollEnabled`  |              `boolean`              |  true   |           Enable swipe between tab views            |
+|      `lazy`       |              `boolean`              |  false  |         Lazy render tab view outside screen         |
+|   `onChangeTab`   | `(currentIndexTab: number) => void` |  false  |       Event to catch tab current when change        |
+
+| `renderScene` | `({ route }: { route: IRoute<T> }) => ReactElement` | | Function to render scenes view (is required) |
+| `renderTabBar` | `(props: TTabBar<T>) => ReactElement` | `(props: TTabBar<T>) => <TabBar {...props} />` | Function to custom render tab bar |
+| `renderHeader` | `() => ReactElement` | | If set props auto header is rendered, custom header function |
+| `ref` | `RTabView` | | Ref tav view |
+
+### IRoute<T>
+
+| props |   type   |
+| :---: | :------: |
+|  key  | `string` |
+| title | `string` |
+| data  |   `T`    |
+
+### TTabBar<T>
+
+|       props        |                       type                        |
+| :----------------: | :-----------------------------------------------: |
+|       routes       |                   `IRoute<T>[]`                   |
+|      position      |               `SharedValue<number>`               |
+|    currentIndex    |               `SharedValue<number>`               |
+|  pageScrollState   | `SharedValue<'idle' \| 'dragging' \| 'settling'>` |
+|  hiddenIndicator   |                     `boolean`                     |
+| styleContainerList |              `StyleProp<ViewStyle>`               |
+|  renderTabBarItem  |      `(props: TTabBarItem) => ReactElement`       |
+|  renderIndicator   |               `() => ReactElement`                |
+
+### TTabBarItem<T>
+
+|  props   |         type          |
+| :------: | :-------------------: |
+|  title   |       `string`        |
+| position | `SharedValue<number>` |
+|  index   |       `number`        |
+
+### RTabView<T>
+
+|   method    |             type             |
+| :---------: | :--------------------------: |
+| setIndexTab | `(indexTab: number) => void` |
 
 ## Contributing
 

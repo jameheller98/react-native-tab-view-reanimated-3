@@ -66,7 +66,7 @@ export type TTabBar<T> = {
   routes: IRoute<T>[];
   position: SharedValue<number>;
   currentIndex: SharedValue<number>;
-  paperViewRef: MutableRefObject<PagerViewInternal | null>;
+  readonly paperViewRef: MutableRefObject<PagerViewInternal | null>;
   pageScrollState: SharedValue<'idle' | 'dragging' | 'settling'>;
   hiddenIndicator?: boolean;
   styleContainerList?: StyleProp<ViewStyle>;

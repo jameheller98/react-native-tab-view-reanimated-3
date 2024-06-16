@@ -93,3 +93,9 @@ export type TCollapseHeader = {
   children: Element;
   renderHeader: () => ReactElement;
 };
+
+export type THeightControl = {
+  heightHeader: number;
+  heightTabBar: number;
+  heightRoot: number;
+};

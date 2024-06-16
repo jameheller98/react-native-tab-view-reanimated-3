@@ -9,6 +9,7 @@ import { StyleSheet, View } from 'react-native';
 import PagerView from 'react-native-pager-view';
 import Animated from 'react-native-reanimated';
 import { withCollapseHeaderComponent } from './HOCs/withCollapseHeaderComponent';
+import { withSetHeightRoot } from './HOCs/withSetHeightRoot';
 import Scene from './components/Scene';
 import WrapperTabBar from './components/WrapperTabBar';
 import {
@@ -24,6 +25,7 @@ import type {
 } from './tabView.types';
 
 const AnimatedPagerView = Animated.createAnimatedComponent(PagerView);
+const ViewWithSetHeightRoot = withSetHeightRoot(View);
 
 const WrapperTabBarWithCollapseHeader = withCollapseHeaderComponent(
   WrapperTabBar
@@ -71,7 +73,7 @@ export const TabView = memo(
 
       return (
         <SyncedScrollableContext.Provider value={syncedScrollableState}>
-          <View style={styles.container}>
+          <ViewWithSetHeightRoot style={styles.container}>
             <WrapperTabBarWithCollapseHeader
               renderTabBar={renderTabBar}
               renderHeader={renderHeader}
@@ -105,7 +107,7 @@ export const TabView = memo(
                 </View>
               ))}
             </AnimatedPagerView>
-          </View>
+          </ViewWithSetHeightRoot>
         </SyncedScrollableContext.Provider>
       );
     }

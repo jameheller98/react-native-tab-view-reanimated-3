@@ -5,37 +5,45 @@ import React, {
   useRef,
   type ComponentClass,
 } from 'react';
-import { ScrollView, type ScrollViewProps } from 'react-native';
+import { ScrollView } from 'react-native';
+import Animated from 'react-native-reanimated';
 import useEnabledScroll from '../hooks/useEnabledScroll';
+import useHandleScroll from '../hooks/useHandleScroll';
 import useAnimatedStyleCollapseScroll from '../hooks/useStyleContainerCollapseScroll';
 
 function withCollapseScrollViewComponent(
-  Component: ComponentClass<ScrollViewProps>
+  Component: ComponentClass<Animated.AnimatedScrollViewProps>
 ) {
   return memo(
-    forwardRef<ScrollView, ScrollViewProps & { id: string }>((props, ref) => {
-      const innerScrollRef = useRef<ScrollView>(null);
-      const { id, contentContainerStyle, ...rest } = props;
+    forwardRef<ScrollView, Animated.AnimatedScrollViewProps & { id: string }>(
+      (props, ref) => {
+        const innerScrollRef = useRef<ScrollView>(null);
+        const { id, contentContainerStyle, ...rest } = props;
 
-      useImperativeHandle(ref, () => innerScrollRef.current!, []);
+        useImperativeHandle(ref, () => innerScrollRef.current!, []);
 
-      useEnabledScroll(innerScrollRef, id);
+        useEnabledScroll(innerScrollRef, id);
 
-      const styleContainerComponent = useAnimatedStyleCollapseScroll(
-        contentContainerStyle
-      );
+        const styleContainerComponent = useAnimatedStyleCollapseScroll(
+          contentContainerStyle
+        );
 
-      return (
-        <Component
-          ref={innerScrollRef}
-          {...rest}
-          contentContainerStyle={styleContainerComponent}
-          scrollEventThrottle={16}
-        />
-      );
-    })
+        const handleScroll = useHandleScroll();
+
+        return (
+          <Component
+            ref={innerScrollRef}
+            {...rest}
+            onScroll={handleScroll}
+            contentContainerStyle={styleContainerComponent}
+            scrollEventThrottle={16}
+          />
+        );
+      }
+    )
   );
 }
 
-export const ScrollViewWithCollapse =
-  withCollapseScrollViewComponent(ScrollView);
+export const ScrollViewWithCollapse = withCollapseScrollViewComponent(
+  Animated.ScrollView
+);

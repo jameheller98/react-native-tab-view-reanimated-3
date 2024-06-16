@@ -1,11 +1,17 @@
 import React, { useCallback, useContext, type ReactNode } from 'react';
 import { StyleSheet, View, type LayoutChangeEvent } from 'react-native';
-import Animated from 'react-native-reanimated';
+import Animated, {
+  Extrapolate,
+  interpolate,
+  useAnimatedStyle,
+} from 'react-native-reanimated';
 import { SyncedScrollableContext } from '../contexts/SyncedScrollableContext';
 import type { TCollapseHeader } from '../tabView.types';
 
 const CollapseHeader = ({ children, renderHeader }: TCollapseHeader) => {
-  const { heightHeader } = useContext(SyncedScrollableContext);
+  const { heightHeader, offsetActiveScrollView } = useContext(
+    SyncedScrollableContext
+  );
 
   const handleLayout = useCallback(
     (e: LayoutChangeEvent) =>
@@ -14,8 +20,21 @@ const CollapseHeader = ({ children, renderHeader }: TCollapseHeader) => {
     []
   );
 
+  const styledHeaderCollapseAnimated = useAnimatedStyle(() => {
+    const translateY = interpolate(
+      offsetActiveScrollView.value,
+      [0, heightHeader.value],
+      [0, -heightHeader.value],
+      Extrapolate.CLAMP
+    );
+
+    return {
+      transform: [{ translateY }],
+    } as any;
+  }, []);
+
   return (
-    <Animated.View style={styles.container}>
+    <Animated.View style={[styles.container, styledHeaderCollapseAnimated]}>
       <View onLayout={handleLayout} collapsable={false}>
         {renderHeader()}
       </View>

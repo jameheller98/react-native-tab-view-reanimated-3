@@ -13,11 +13,11 @@ export default function useInitScroll(
 
   const handleScroll = useCallback(
     (offsetActiveScrollViewValue: number) => {
-      (innerScrollRef.current as ScrollView)?.scrollTo({
+      (innerScrollRef.current as ScrollView)?.scrollTo?.({
         animated: false,
         y: offsetActiveScrollViewValue,
       });
-      (innerScrollRef.current as FlatList)?.scrollToOffset({
+      (innerScrollRef.current as FlatList)?.scrollToOffset?.({
         animated: false,
         offset: offsetActiveScrollViewValue,
       });

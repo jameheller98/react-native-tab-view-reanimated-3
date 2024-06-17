@@ -25,11 +25,11 @@ export default function useSyncScroll(
         offsetCurrentScrollValue >= 0 &&
         offsetCurrentScrollValue <= heightHeaderValue
       ) {
-        (innerScrollRef.current as ScrollView)?.scrollTo({
+        (innerScrollRef.current as ScrollView)?.scrollTo?.({
           animated: false,
           y: offsetActiveScrollValue,
         });
-        (innerScrollRef.current as FlatList)?.scrollToOffset({
+        (innerScrollRef.current as FlatList)?.scrollToOffset?.({
           animated: false,
           offset: offsetActiveScrollValue,
         });

@@ -11,22 +11,28 @@ export default function useInitScroll(
     SyncedScrollableContext
   );
 
+  const handleScroll = useCallback(
+    (offsetActiveScrollViewValue: number) => {
+      (innerScrollRef.current as ScrollView)?.scrollTo({
+        animated: false,
+        y: offsetActiveScrollViewValue,
+      });
+      (innerScrollRef.current as FlatList)?.scrollToOffset({
+        animated: false,
+        offset: offsetActiveScrollViewValue,
+      });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [innerScrollRef.current]
+  );
+
   const handleInit = useCallback(() => {
     'worklet';
     if (activeScrollViewID.value === id) {
-      runOnJS((innerScrollRef.current as ScrollView)?.scrollTo || (() => {}))({
-        animated: false,
-        y: offsetActiveScrollView.value,
-      });
-      runOnJS(
-        (innerScrollRef.current as FlatList)?.scrollToOffset || (() => {})
-      )({
-        animated: false,
-        offset: offsetActiveScrollView.value,
-      });
+      runOnJS(handleScroll)(offsetActiveScrollView.value);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [innerScrollRef.current]);
+  }, []);
 
   return handleInit;
 }

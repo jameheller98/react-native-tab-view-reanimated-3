@@ -1,6 +1,7 @@
 import React, { memo, useCallback, useRef } from 'react';
 import {
   Dimensions,
+  Platform,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -123,10 +124,19 @@ export const TabBar = memo(
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [routes.length]);
 
+    const handleSetPage = useCallback((index: number) => {
+      if (Platform.OS === 'ios') {
+        requestAnimationFrame(() => paperViewRef.current?.setPage(index));
+      } else {
+        paperViewRef.current?.setPage(index);
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     const handleChangeTab = useCallback((index: number) => {
       'worklet';
       if (pageScrollState.value === 'idle') {
-        runOnJS(paperViewRef.current?.setPage || ((_) => {}))(index);
+        runOnJS(handleSetPage)(index);
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);

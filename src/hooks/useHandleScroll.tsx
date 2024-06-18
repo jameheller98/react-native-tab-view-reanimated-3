@@ -17,25 +17,17 @@ export default function useHandleScroll(
 
   const scrollHandler = useAnimatedScrollHandler(
     (event) => {
-      if (
-        offsetCurrentScroll.value <=
-        offsetActiveScrollView.value - collapseHeaderOptions.frozenTopOffset!
-      ) {
+      if (offsetCurrentScroll.value <= offsetActiveScrollView.value) {
         offsetActiveScrollView.value = clamp(
           event.contentOffset.y,
           0,
-          heightHeader.value
+          heightHeader.value - collapseHeaderOptions.frozenTopOffset!
         );
-      } else if (
-        offsetCurrentScroll.value >
-        offsetActiveScrollView.value - collapseHeaderOptions.frozenTopOffset!
-      ) {
-        offsetActiveScrollView.value = heightHeader.value;
       }
 
       offsetCurrentScroll.value = event.contentOffset.y;
     },
-    [collapseHeaderOptions]
+    [collapseHeaderOptions.frozenTopOffset]
   );
 
   return scrollHandler;

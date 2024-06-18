@@ -6,13 +6,11 @@ import Animated, {
   useAnimatedStyle,
 } from 'react-native-reanimated';
 import { SyncedScrollableContext } from '../contexts/SyncedScrollableContext';
+import { useContextTabView } from '../contexts/TabViewContext';
 import type { TCollapseHeader } from '../tabView.types';
 
-const CollapseHeader = ({
-  children,
-  renderHeader,
-  collapseHeaderOptions,
-}: TCollapseHeader) => {
+const CollapseHeader = ({ children, renderHeader }: TCollapseHeader) => {
+  const { collapseHeaderOptions } = useContextTabView();
   const { heightHeader, offsetActiveScrollView } = useContext(
     SyncedScrollableContext
   );

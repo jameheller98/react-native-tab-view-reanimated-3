@@ -56,7 +56,8 @@ export type TTabView<T> = {
   renderTabBar?: (props: TTabBar<T>) => ReactElement;
   renderScene: ({ route }: { route: IRoute<T> }) => ReactElement;
   onChangeTab?: (currentIndexTab: number) => void;
-} & Partial<Pick<TCollapseHeader, 'renderHeader' | 'collapseHeaderOptions'>>;
+} & Partial<Pick<TCollapseHeader, 'renderHeader'>> &
+  TTabViewContext;
 
 export type RTabView = {
   setIndexTab: (indexTab: number) => void;
@@ -97,13 +98,16 @@ export type TCollapseHeader = {
   }: {
     offsetActiveScrollView: SharedValue<number>;
   }) => ReactElement;
-  collapseHeaderOptions?: {
-    frozenTopOffset?: number;
-  };
 };
 
 export type THeightControl = {
   heightHeader: number;
   heightTabBar: number;
   heightRoot: number;
+};
+
+export type TTabViewContext = {
+  collapseHeaderOptions?: {
+    frozenTopOffset?: number;
+  };
 };

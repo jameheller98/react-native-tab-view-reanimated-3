@@ -6,23 +6,11 @@ import type { TCollapseHeader } from '../tabView.types';
 export function withCollapseHeaderComponent<T extends Object>(
   Component: ComponentType<T>
 ) {
-  return (
-    props: T &
-      Partial<Pick<TCollapseHeader, 'renderHeader' | 'collapseHeaderOptions'>>
-  ) => {
-    const { renderHeader, collapseHeaderOptions, ...rest } = props;
-    const defaultCollapseHeaderOptions = Object.assign(
-      { frozenTopOffset: 0 } as NonNullable<
-        TCollapseHeader['collapseHeaderOptions']
-      >,
-      collapseHeaderOptions
-    );
+  return (props: T & Partial<Pick<TCollapseHeader, 'renderHeader'>>) => {
+    const { renderHeader, ...rest } = props;
 
     return renderHeader ? (
-      <CollapseHeader
-        renderHeader={renderHeader}
-        collapseHeaderOptions={defaultCollapseHeaderOptions}
-      >
+      <CollapseHeader renderHeader={renderHeader}>
         <Component {...(rest as T)} />
       </CollapseHeader>
     ) : (

@@ -16,6 +16,7 @@ import {
   SyncedScrollableContext,
   syncedScrollableState,
 } from './contexts/SyncedScrollableContext';
+import { TabViewContext } from './contexts/TabViewContext';
 import useTabViewHook from './hooks/useTabViewHook';
 import type {
   PagerViewInternal,
@@ -56,6 +57,7 @@ export const TabView = memo(
       ref: ForwardedRef<RTabView>
     ) => {
       const paperViewRef = useRef<PagerViewInternal>(null);
+      const tabViewContextValueMemo = useRef({ collapseHeaderOptions }).current;
       const {
         position,
         currentIndex,
@@ -76,44 +78,46 @@ export const TabView = memo(
       }, []);
 
       return (
-        <SyncedScrollableContext.Provider value={syncedScrollableState}>
-          <ViewWithSetHeightRoot style={styles.container}>
-            <WrapperTabBarWithCollapseHeader
-              renderTabBar={renderTabBar}
-              renderHeader={renderHeader}
-              routes={routes}
-              position={position}
-              currentIndex={currentIndex}
-              paperViewRef={paperViewRef}
-              pageScrollState={pageScrollState}
-              collapseHeaderOptions={collapseHeaderOptions}
-            />
-            <AnimatedPagerView
-              //@ts-ignore
-              ref={paperViewRef}
-              scrollEnabled={scrollEnabled}
-              style={styles.pagerView}
-              initialPage={defaultIndexTab}
-              offscreenPageLimit={1}
-              onPageScroll={handlePageScroll}
-              onPageSelected={handlePageSelected}
-              onPageScrollStateChanged={handlePageScrollStateChanged}
-            >
-              {routes.map((item, index) => (
-                <View key={item.key} style={styles.item} collapsable={false}>
-                  <Scene<T>
-                    item={item}
-                    lazy={lazy}
-                    index={index}
-                    currentIndex={currentIndex}
-                    pageScrollState={pageScrollState}
-                    renderScene={renderScene}
-                  />
-                </View>
-              ))}
-            </AnimatedPagerView>
-          </ViewWithSetHeightRoot>
-        </SyncedScrollableContext.Provider>
+        <TabViewContext.Provider value={tabViewContextValueMemo}>
+          <SyncedScrollableContext.Provider value={syncedScrollableState}>
+            <ViewWithSetHeightRoot style={styles.container}>
+              <WrapperTabBarWithCollapseHeader
+                renderTabBar={renderTabBar}
+                renderHeader={renderHeader}
+                routes={routes}
+                position={position}
+                currentIndex={currentIndex}
+                paperViewRef={paperViewRef}
+                pageScrollState={pageScrollState}
+                collapseHeaderOptions={collapseHeaderOptions}
+              />
+              <AnimatedPagerView
+                //@ts-ignore
+                ref={paperViewRef}
+                scrollEnabled={scrollEnabled}
+                style={styles.pagerView}
+                initialPage={defaultIndexTab}
+                offscreenPageLimit={1}
+                onPageScroll={handlePageScroll}
+                onPageSelected={handlePageSelected}
+                onPageScrollStateChanged={handlePageScrollStateChanged}
+              >
+                {routes.map((item, index) => (
+                  <View key={item.key} style={styles.item} collapsable={false}>
+                    <Scene<T>
+                      item={item}
+                      lazy={lazy}
+                      index={index}
+                      currentIndex={currentIndex}
+                      pageScrollState={pageScrollState}
+                      renderScene={renderScene}
+                    />
+                  </View>
+                ))}
+              </AnimatedPagerView>
+            </ViewWithSetHeightRoot>
+          </SyncedScrollableContext.Provider>
+        </TabViewContext.Provider>
       );
     }
   )

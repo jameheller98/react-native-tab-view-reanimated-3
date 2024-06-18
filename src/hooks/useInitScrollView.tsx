@@ -32,7 +32,7 @@ export default function useInitScroll(
       runOnJS(handleScroll)(offsetActiveScrollView.value);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [handleScroll]);
 
   return handleInit;
 }

@@ -88,17 +88,18 @@ export const Test:FC<any> = () => {
 
 ## API Reference
 
-|       name        |                                              type                                              |                    default                     |                         description                          |
-| :---------------: | :--------------------------------------------------------------------------------------------: | :--------------------------------------------: | :----------------------------------------------------------: |
-|     `routes`      |                                         `IRoute<T>[]`                                          |                                                |     Data route to render tab bar and view (is required)      |
-| `defaultIndexTab` |                                            `number`                                            |                       0                        |                 Default tab index when init                  |
-|  `scrollEnabled`  |                                           `boolean`                                            |                      true                      |                Enable swipe between tab views                |
-|      `lazy`       |                                           `boolean`                                            |                     false                      |             Lazy render tab view outside screen              |
-|   `onChangeTab`   |                              `(currentIndexTab: number) => void`                               |                     false                      |            Event to catch tab current when change            |
-|   `renderScene`   |                       `({ route }:{ route: IRoute<T> }) => ReactElement`                       |                                                |         Function to render scenes view (is required)         |
-|  `renderTabBar`   |                             `(props: TTabBar<T>) => ReactElement`                              | `(props: TTabBar<T>) => <TabBar {...props} />` |              Function to custom render tab bar               |
-|  `renderHeader`   | `({ offsetActiveScrollView }:{ offsetActiveScrollView: SharedValue<number> }) => ReactElement` |                                                | If set props auto header is rendered, custom header function |
-|       `ref`       |                                           `RTabView`                                           |                                                |                         Ref tav view                         |
+|          name           |                                              type                                              |                    default                     |                         description                          |
+| :---------------------: | :--------------------------------------------------------------------------------------------: | :--------------------------------------------: | :----------------------------------------------------------: |
+|        `routes`         |                                         `IRoute<T>[]`                                          |                                                |     Data route to render tab bar and view (is required)      |
+|    `defaultIndexTab`    |                                            `number`                                            |                       0                        |                 Default tab index when init                  |
+|     `scrollEnabled`     |                                           `boolean`                                            |                      true                      |                Enable swipe between tab views                |
+|         `lazy`          |                                           `boolean`                                            |                     false                      |             Lazy render tab view outside screen              |
+|      `onChangeTab`      |                              `(currentIndexTab: number) => void`                               |                     false                      |            Event to catch tab current when change            |
+|      `renderScene`      |                       `({ route }:{ route: IRoute<T> }) => ReactElement`                       |                                                |         Function to render scenes view (is required)         |
+|     `renderTabBar`      |                             `(props: TTabBar<T>) => ReactElement`                              | `(props: TTabBar<T>) => <TabBar {...props} />` |              Function to custom render tab bar               |
+|     `renderHeader`      | `({ offsetActiveScrollView }:{ offsetActiveScrollView: SharedValue<number> }) => ReactElement` |                                                | If set props auto header is rendered, custom header function |
+|          `ref`          |                                           `RTabView`                                           |                                                |                         Ref tav view                         |
+| `collapseHeaderOptions` |                                 `{frozenTopOffset?: number;}`                                  |             {frozenTopOffset: 0;}              |                    Option collapse header                    |
 
 ### IRoute<T>
 

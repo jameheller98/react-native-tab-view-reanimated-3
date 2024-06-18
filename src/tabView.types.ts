@@ -56,7 +56,7 @@ export type TTabView<T> = {
   renderTabBar?: (props: TTabBar<T>) => ReactElement;
   renderScene: ({ route }: { route: IRoute<T> }) => ReactElement;
   onChangeTab?: (currentIndexTab: number) => void;
-} & Partial<Pick<TCollapseHeader, 'renderHeader'>>;
+} & Partial<Pick<TCollapseHeader, 'renderHeader' | 'collapseHeaderOptions'>>;
 
 export type RTabView = {
   setIndexTab: (indexTab: number) => void;

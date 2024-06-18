@@ -31,7 +31,10 @@ const WrapperTabBarWithCollapseHeader = withCollapseHeaderComponent(
   WrapperTabBar
 ) as <T>(
   props: TTabBar<T> &
-    Pick<TTabView<T>, 'renderTabBar' | 'renderHeader'> & {
+    Pick<
+      TTabView<T>,
+      'renderTabBar' | 'renderHeader' | 'collapseHeaderOptions'
+    > & {
       isCollapseHeader?: boolean;
     }
 ) => React.ReactElement<T>;
@@ -44,6 +47,7 @@ export const TabView = memo(
         lazy = false,
         defaultIndexTab = 0,
         scrollEnabled = true,
+        collapseHeaderOptions,
         renderTabBar,
         renderHeader,
         renderScene,
@@ -82,6 +86,7 @@ export const TabView = memo(
               currentIndex={currentIndex}
               paperViewRef={paperViewRef}
               pageScrollState={pageScrollState}
+              collapseHeaderOptions={collapseHeaderOptions}
             />
             <AnimatedPagerView
               //@ts-ignore

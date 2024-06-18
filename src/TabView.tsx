@@ -32,10 +32,7 @@ const WrapperTabBarWithCollapseHeader = withCollapseHeaderComponent(
   WrapperTabBar
 ) as <T>(
   props: TTabBar<T> &
-    Pick<
-      TTabView<T>,
-      'renderTabBar' | 'renderHeader' | 'collapseHeaderOptions'
-    > & {
+    Pick<TTabView<T>, 'renderTabBar' | 'renderHeader'> & {
       isCollapseHeader?: boolean;
     }
 ) => React.ReactElement<T>;
@@ -57,7 +54,9 @@ export const TabView = memo(
       ref: ForwardedRef<RTabView>
     ) => {
       const paperViewRef = useRef<PagerViewInternal>(null);
-      const tabViewContextValueMemo = useRef({ collapseHeaderOptions }).current;
+      const tabViewContextValueMemo = useRef({
+        collapseHeaderOptions: collapseHeaderOptions || {},
+      }).current;
       const {
         position,
         currentIndex,
@@ -89,7 +88,6 @@ export const TabView = memo(
                 currentIndex={currentIndex}
                 paperViewRef={paperViewRef}
                 pageScrollState={pageScrollState}
-                collapseHeaderOptions={collapseHeaderOptions}
               />
               <AnimatedPagerView
                 //@ts-ignore

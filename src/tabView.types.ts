@@ -107,7 +107,8 @@ export type THeightControl = {
 };
 
 export type TTabViewContext = {
-  collapseHeaderOptions?: {
+  collapseHeaderOptions: {
     frozenTopOffset?: number;
+    styleHeaderContainer?: StyleProp<ViewStyle>;
   };
 };

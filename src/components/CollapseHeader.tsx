@@ -36,7 +36,13 @@ const CollapseHeader = ({ children, renderHeader }: TCollapseHeader) => {
   }, []);
 
   return (
-    <Animated.View style={[styles.container, styledHeaderCollapseAnimated]}>
+    <Animated.View
+      style={[
+        styles.container,
+        collapseHeaderOptions.styleHeaderContainer,
+        styledHeaderCollapseAnimated,
+      ]}
+    >
       <View onLayout={handleLayout} collapsable={false}>
         {renderHeader({ offsetActiveScrollView })}
       </View>

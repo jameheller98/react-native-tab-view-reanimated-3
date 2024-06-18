@@ -2,7 +2,7 @@ import { createContext, useContext } from 'react';
 import type { TTabViewContext } from '../tabView.types';
 
 export const tabViewContextInit: TTabViewContext = {
-  collapseHeaderOptions: undefined,
+  collapseHeaderOptions: {},
 };
 
 export const TabViewContext = createContext(tabViewContextInit);

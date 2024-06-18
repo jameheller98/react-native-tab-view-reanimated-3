@@ -8,7 +8,11 @@ import Animated, {
 import { SyncedScrollableContext } from '../contexts/SyncedScrollableContext';
 import type { TCollapseHeader } from '../tabView.types';
 
-const CollapseHeader = ({ children, renderHeader }: TCollapseHeader) => {
+const CollapseHeader = ({
+  children,
+  renderHeader,
+  collapseHeaderOptions,
+}: TCollapseHeader) => {
   const { heightHeader, offsetActiveScrollView } = useContext(
     SyncedScrollableContext
   );
@@ -23,8 +27,8 @@ const CollapseHeader = ({ children, renderHeader }: TCollapseHeader) => {
   const styledHeaderCollapseAnimated = useAnimatedStyle(() => {
     const translateY = interpolate(
       offsetActiveScrollView.value,
-      [0, heightHeader.value],
-      [0, -heightHeader.value],
+      [0, heightHeader.value - collapseHeaderOptions!.frozenTopOffset!],
+      [0, -heightHeader.value + collapseHeaderOptions!.frozenTopOffset!],
       Extrapolation.CLAMP
     );
 

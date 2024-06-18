@@ -97,6 +97,9 @@ export type TCollapseHeader = {
   }: {
     offsetActiveScrollView: SharedValue<number>;
   }) => ReactElement;
+  collapseHeaderOptions?: {
+    frozenTopOffset?: number;
+  };
 };
 
 export type THeightControl = {

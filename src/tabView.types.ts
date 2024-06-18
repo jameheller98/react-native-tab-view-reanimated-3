@@ -92,7 +92,11 @@ export type TScene<T> = {
 
 export type TCollapseHeader = {
   children: Element;
-  renderHeader: () => ReactElement;
+  renderHeader: ({
+    offsetActiveScrollView,
+  }: {
+    offsetActiveScrollView: SharedValue<number>;
+  }) => ReactElement;
 };
 
 export type THeightControl = {

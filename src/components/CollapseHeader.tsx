@@ -36,7 +36,7 @@ const CollapseHeader = ({ children, renderHeader }: TCollapseHeader) => {
   return (
     <Animated.View style={[styles.container, styledHeaderCollapseAnimated]}>
       <View onLayout={handleLayout} collapsable={false}>
-        {renderHeader()}
+        {renderHeader({ offsetActiveScrollView })}
       </View>
       {children as ReactNode}
     </Animated.View>

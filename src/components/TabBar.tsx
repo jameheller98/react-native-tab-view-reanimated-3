@@ -5,7 +5,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
-  type ViewStyle,
 } from 'react-native';
 import Animated, {
   interpolate,
@@ -16,7 +15,6 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
-  type AnimatedStyleProp,
 } from 'react-native-reanimated';
 import type { IRoute, TMeasure, TTabBar } from '../tabView.types';
 import { getMeasure } from '../tabViewUtils';
@@ -34,6 +32,7 @@ export const TabBar = memo(
     pageScrollState,
     hiddenIndicator = false,
     styleContainerList,
+    styleTabBarItem,
     renderTabBarItem,
     renderIndicator,
   }: TTabBar<T>) => {
@@ -94,7 +93,7 @@ export const TabBar = memo(
           { scaleX: withSpring(scaleX, { mass: 0.6 }) },
           { translateX: widthWindow / 2 },
         ],
-      } as AnimatedStyleProp<ViewStyle>;
+      } as any;
     }, []);
 
     const handleLayout = useCallback(() => {
@@ -157,7 +156,7 @@ export const TabBar = memo(
             {routes.map((item: IRoute<T>, index: number) => (
               <TouchableOpacity
                 key={item.key}
-                style={styles.item}
+                style={[styles.item, styleTabBarItem]}
                 activeOpacity={0.8}
                 hitSlop={10}
                 onPress={() => handleChangeTab(index)}

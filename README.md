@@ -48,6 +48,44 @@ export const Test:FC<any> = () => {
 }
 ```
 
+## Quick start with collapse header
+
+```js
+import { TabView, SceneMap, RTabView, IRoute, ScrollViewWithCollapse } from "react-native-tab-view-reanimated-3";
+
+type TRouteData = number
+
+// NOTE: you must pass route to tab and use route key for ScrollViewWithCollapse to sync scroll
+const Tab1 = ({route} : {route:IRoute<TRouteData>}) => <ScrollViewWithCollapse key={route.key} style={{ flex: 1, backgroundColor: 'gray' }}></ScrollViewWithCollapse>
+const Tab2 = ({route} : {route:IRoute<TRouteData>}) => <ScrollViewWithCollapse key={route.key} style={{ flex: 1, backgroundColor: 'purple' }}></ScrollViewWithCollapse>
+
+const scenes = SceneMap({
+  "1": Tab1,
+  "2": Tab2,
+})
+
+// ...
+
+export const Test:FC<any> = () => {
+  const refTabView = useRef<RTabView>(null)
+  const [routes] = useState<IRoute<TRouteData>[]>([
+    { key: "1", title: "Tab 1", data: 0 },
+    { key: "2", title: "Tab 2", data: 1 },
+  ])
+
+  // Declare and use props will trigger header collapse
+  const renderHeader = () => {
+    return <View style={{height: 200}} />
+  }
+
+  return (
+    <View style={{flex: 1}}>
+      <TabView ref={refTabView} routes={routes} renderScene={scenes} renderHeader={renderHeader} lazy />
+    </View>
+  )
+}
+```
+
 ## API Reference
 
 |       name        |                        type                         |                    default                     |                         description                          |
@@ -80,6 +118,7 @@ export const Test:FC<any> = () => {
 |  pageScrollState   | `SharedValue<'idle' \| 'dragging' \| 'settling'>` |
 |  hiddenIndicator   |                     `boolean`                     |
 | styleContainerList |              `StyleProp<ViewStyle>`               |
+|  styleTabBarItem   |              `StyleProp<ViewStyle>`               |
 |  renderTabBarItem  |      `(props: TTabBarItem) => ReactElement`       |
 |  renderIndicator   |               `() => ReactElement`                |
 

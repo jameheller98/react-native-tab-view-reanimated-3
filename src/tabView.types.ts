@@ -70,6 +70,7 @@ export type TTabBar<T> = {
   pageScrollState: SharedValue<'idle' | 'dragging' | 'settling'>;
   hiddenIndicator?: boolean;
   styleContainerList?: StyleProp<ViewStyle>;
+  styleTabBarItem?: StyleProp<ViewStyle>;
   renderTabBarItem?: (props: TTabBarItem) => ReactElement;
   renderIndicator?: () => ReactElement;
 };

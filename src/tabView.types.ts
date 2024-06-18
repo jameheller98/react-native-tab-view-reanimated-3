@@ -61,6 +61,7 @@ export type TTabView<T> = {
 
 export type RTabView = {
   setIndexTab: (indexTab: number) => void;
+  setIsSwipe: (isSwipe: boolean) => void;
 };
 
 export type TTabBar<T> = {

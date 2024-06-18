@@ -73,6 +73,11 @@ export const TabView = memo(
 
             paperViewRef.current.setPage(indexTab);
           },
+          setIsSwipe: (isSwipe: boolean) => {
+            if (!paperViewRef.current) return;
+
+            paperViewRef.current.setScrollEnabled(isSwipe);
+          },
         };
       }, []);
 

@@ -142,6 +142,7 @@ export const Test:FC<any> = () => {
 |   method    |             type             |
 | :---------: | :--------------------------: |
 | setIndexTab | `(indexTab: number) => void` |
+| setIsSwipe  | `(isSwipe: boolean) => void` |
 
 ## Contributing
 

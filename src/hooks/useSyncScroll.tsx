@@ -6,12 +6,17 @@ import {
   type SharedValue,
 } from 'react-native-reanimated';
 import { SyncedScrollableContext } from '../contexts/SyncedScrollableContext';
+import { useContextTabView } from '../contexts/TabViewContext';
+import { getCloser } from '../tabViewUtils';
 
 export default function useSyncScroll(
   innerScrollRef: RefObject<FlatList<any> | ScrollView>,
   id: string,
   offsetCurrentScroll: SharedValue<number>
 ) {
+  const {
+    collapseHeaderOptions: { frozenTopOffset },
+  } = useContextTabView();
   const { activeScrollViewID, offsetActiveScrollView, heightHeader } =
     useContext(SyncedScrollableContext);
 
@@ -25,18 +30,24 @@ export default function useSyncScroll(
         offsetCurrentScrollValue >= 0 &&
         offsetCurrentScrollValue <= heightHeaderValue
       ) {
+        const closer = getCloser(
+          offsetActiveScrollValue,
+          heightHeader.value - frozenTopOffset!,
+          0
+        );
+
         (innerScrollRef.current as ScrollView)?.scrollTo?.({
           animated: false,
-          y: offsetActiveScrollValue,
+          y: closer,
         });
         (innerScrollRef.current as FlatList)?.scrollToOffset?.({
           animated: false,
-          offset: offsetActiveScrollValue,
+          offset: closer,
         });
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [frozenTopOffset]
   );
 
   useAnimatedReaction(

@@ -56,8 +56,6 @@ export default function useHandleScroll(
         offsetCurrentScroll.value = event.contentOffset.y;
       },
       onMomentumEnd: (event) => {
-        if (isStickHeaderOnTop) return;
-
         let offsetY = event.contentOffset.y;
 
         if (

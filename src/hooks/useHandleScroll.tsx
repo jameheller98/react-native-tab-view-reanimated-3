@@ -41,7 +41,7 @@ export default function useHandleScroll(
           const diff = event.contentOffset.y - offsetCurrentScroll.value;
 
           offsetActiveScrollView.value = clamp(
-            offsetActiveScrollView.value + diff,
+            event.contentOffset.y < 0 ? 0 : offsetActiveScrollView.value + diff,
             0,
             heightHeader.value - frozenTopOffset!
           );

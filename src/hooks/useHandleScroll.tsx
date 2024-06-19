@@ -1,33 +1,89 @@
-import { useContext } from 'react';
+import { useCallback, useContext, type RefObject } from 'react';
+import type { FlatList, ScrollView } from 'react-native';
 import {
+  runOnJS,
   useAnimatedScrollHandler,
   type SharedValue,
 } from 'react-native-reanimated';
 import { SyncedScrollableContext } from '../contexts/SyncedScrollableContext';
 import { useContextTabView } from '../contexts/TabViewContext';
-import { clamp } from '../tabViewUtils';
+import { clamp, getCloser } from '../tabViewUtils';
 
 export default function useHandleScroll(
-  offsetCurrentScroll: SharedValue<number>
+  offsetCurrentScroll: SharedValue<number>,
+  innerScrollRef: RefObject<FlatList<any> | ScrollView>
 ) {
-  const { collapseHeaderOptions } = useContextTabView();
+  const {
+    collapseHeaderOptions: { frozenTopOffset, isStickHeaderOnTop },
+  } = useContextTabView();
   const { offsetActiveScrollView, heightHeader } = useContext(
     SyncedScrollableContext
   );
 
-  const scrollHandler = useAnimatedScrollHandler(
-    (event) => {
-      if (offsetCurrentScroll.value <= offsetActiveScrollView.value) {
-        offsetActiveScrollView.value = clamp(
-          event.contentOffset.y,
-          0,
-          heightHeader.value - collapseHeaderOptions.frozenTopOffset!
-        );
-      }
+  const handleAutoScroll = useCallback(
+    (offsetY: number) => {
+      if (!innerScrollRef.current) return;
 
-      offsetCurrentScroll.value = event.contentOffset.y;
+      (innerScrollRef.current as ScrollView)?.scrollTo?.({
+        y: offsetY,
+      });
+      (innerScrollRef.current as FlatList)?.scrollToOffset?.({
+        offset: offsetY,
+      });
     },
-    [collapseHeaderOptions.frozenTopOffset]
+    [innerScrollRef]
+  );
+
+  const scrollHandler = useAnimatedScrollHandler(
+    {
+      onScroll: (event) => {
+        if (!isStickHeaderOnTop) {
+          const diff = event.contentOffset.y - offsetCurrentScroll.value;
+
+          offsetActiveScrollView.value = clamp(
+            offsetActiveScrollView.value + diff,
+            0,
+            heightHeader.value - frozenTopOffset!
+          );
+        } else if (offsetCurrentScroll.value <= offsetActiveScrollView.value) {
+          offsetActiveScrollView.value = clamp(
+            event.contentOffset.y,
+            0,
+            heightHeader.value - frozenTopOffset!
+          );
+        }
+
+        offsetCurrentScroll.value = event.contentOffset.y;
+      },
+      onMomentumEnd: (event) => {
+        if (isStickHeaderOnTop) return;
+
+        let offsetY = event.contentOffset.y;
+
+        if (
+          !(
+            offsetActiveScrollView.value === 0 ||
+            offsetActiveScrollView.value ===
+              heightHeader.value - frozenTopOffset!
+          )
+        ) {
+          const closer = getCloser(
+            offsetActiveScrollView.value,
+            heightHeader.value - frozenTopOffset!,
+            0
+          );
+
+          if (closer === heightHeader.value - frozenTopOffset!) {
+            offsetY = offsetY + (heightHeader.value - frozenTopOffset!);
+          } else {
+            offsetY = offsetY - (heightHeader.value - frozenTopOffset!);
+          }
+
+          runOnJS(handleAutoScroll)(offsetY);
+        }
+      },
+    },
+    [frozenTopOffset, isStickHeaderOnTop, handleAutoScroll]
   );
 
   return scrollHandler;

@@ -21,3 +21,14 @@ export const clamp = (
   'worklet';
   return Math.min(Math.max(lowerBound, value), upperBound);
 };
+
+export const getCloser = (
+  value: number,
+  checkOne: number,
+  checkTwo: number
+) => {
+  'worklet';
+  return Math.abs(value - checkOne) < Math.abs(value - checkTwo)
+    ? checkOne
+    : checkTwo;
+};

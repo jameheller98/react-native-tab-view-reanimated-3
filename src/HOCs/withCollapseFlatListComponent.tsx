@@ -32,7 +32,7 @@ function withCollapseFlatListComponent<T>(
         contentContainerStyle
       );
 
-      const handleScroll = useHandleScroll(offsetCurrentScroll);
+      const handleScroll = useHandleScroll(offsetCurrentScroll, innerScrollRef);
 
       const handleInitScroll = useInitScroll(innerScrollRef, id);
 

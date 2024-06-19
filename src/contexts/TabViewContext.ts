@@ -10,7 +10,7 @@ export const TabViewContext = createContext(tabViewContextInit);
 export const useContextTabView = () => {
   const context = useContext(TabViewContext);
   const defaultCollapseHeaderOptions = Object.assign(
-    { frozenTopOffset: 0 } as NonNullable<
+    { frozenTopOffset: 0, isStickHeaderOnTop: true } as NonNullable<
       TTabViewContext['collapseHeaderOptions']
     >,
     context.collapseHeaderOptions

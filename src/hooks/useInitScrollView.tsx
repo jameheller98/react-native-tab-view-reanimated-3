@@ -22,8 +22,7 @@ export default function useInitScroll(
         offset: offsetActiveScrollViewValue,
       });
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [innerScrollRef.current]
+    [innerScrollRef]
   );
 
   const handleInit = useCallback(() => {

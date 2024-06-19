@@ -78,6 +78,13 @@ export const TabView = memo(
 
             paperViewRef.current.setScrollEnabled(isSwipe);
           },
+          clean: () => {
+            syncedScrollableState.activeScrollViewID.value = '';
+            syncedScrollableState.heightHeader.value = 0;
+            syncedScrollableState.heightRoot.value = 0;
+            syncedScrollableState.heightTabBar.value = 0;
+            syncedScrollableState.offsetActiveScrollView.value = 0;
+          },
         };
       }, []);
 

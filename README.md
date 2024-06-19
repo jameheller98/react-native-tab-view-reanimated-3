@@ -133,9 +133,9 @@ export const Test:FC<any> = () => {
 
 ### TTabViewContext
 
-|        method         |                                                  type                                                  |                                                                                       description                                                                                       |
-| :-------------------: | :----------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| collapseHeaderOptions | `{frozenTopOffset?: number; styleHeaderContainer?: StyleProp<ViewStyle>;, isStickHeaderOnTop?:number}` | `- frozenTopOffset: Height frozen stop when collapse header\n- styleHeaderContainer: Style container animation header\n- isStickHeaderOnTop: header has sticky collapse only top or no` |
+|        method         |                                                  type                                                  |                                                                                           description                                                                                           |
+| :-------------------: | :----------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| collapseHeaderOptions | `{frozenTopOffset?: number; styleHeaderContainer?: StyleProp<ViewStyle>;, isStickHeaderOnTop?:number}` | `***frozenTopOffset: Height frozen stop when collapse header******styleHeaderContainer: Style container animation header******isStickHeaderOnTop: header has sticky collapse only top or no***` |
 
 ### RTabView<T>
 

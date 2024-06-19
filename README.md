@@ -131,11 +131,14 @@ export const Test:FC<any> = () => {
 | position | `SharedValue<number>` |
 |  index   |       `number`        |
 
-### TTabViewContext
+### TTabViewContext['collapseHeaderOptions']
 
-|        method         |                                                  type                                                  |                                                                                           description                                                                                           |
-| :-------------------: | :----------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| collapseHeaderOptions | `{frozenTopOffset?: number; styleHeaderContainer?: StyleProp<ViewStyle>;, isStickHeaderOnTop?:number}` | `***frozenTopOffset: Height frozen stop when collapse header******styleHeaderContainer: Style container animation header******isStickHeaderOnTop: header has sticky collapse only top or no***` |
+|        props         |          type          |                                                       description                                                        |
+| :------------------: | :--------------------: | :----------------------------------------------------------------------------------------------------------------------: |
+|   frozenTopOffset    |        `number`        |                                 Frozen top prevent collapse all height header(default 0)                                 |
+| styleHeaderContainer | `StyleProp<ViewStyle>` |                                              Custom style Header Container                                               |
+|  isStickHeaderOnTop  |       `boolean`        | Default header always in first screen (true), if (false) when scroll down header will can open back every where position |
+|   isCollapseHeader   |       `boolean`        |                                         Prevent header collapse (default false)                                          |
 
 ### RTabView<T>
 

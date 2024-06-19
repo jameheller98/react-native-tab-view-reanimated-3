@@ -113,5 +113,6 @@ export type TTabViewContext = {
     frozenTopOffset?: number;
     styleHeaderContainer?: StyleProp<ViewStyle>;
     isStickHeaderOnTop?: boolean;
+    isCollapseHeader?: boolean;
   };
 };

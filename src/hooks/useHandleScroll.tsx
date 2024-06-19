@@ -47,7 +47,7 @@ export default function useHandleScroll(
           );
         } else if (offsetCurrentScroll.value <= offsetActiveScrollView.value) {
           offsetActiveScrollView.value = clamp(
-            event.contentOffset.y,
+            event.contentOffset.y < 0 ? 0 : event.contentOffset.y,
             0,
             heightHeader.value - frozenTopOffset!
           );

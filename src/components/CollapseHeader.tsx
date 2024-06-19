@@ -39,6 +39,12 @@ const CollapseHeader = ({ children, renderHeader }: TCollapseHeader) => {
     <Animated.View
       style={[
         styles.container,
+        // eslint-disable-next-line react-native/no-inline-styles
+        {
+          position: collapseHeaderOptions.isCollapseHeader
+            ? 'absolute'
+            : 'relative',
+        },
         collapseHeaderOptions.styleHeaderContainer,
         styledHeaderCollapseAnimated,
       ]}
@@ -55,7 +61,6 @@ export default CollapseHeader;
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
     zIndex: 1,
     width: '100%',
   },

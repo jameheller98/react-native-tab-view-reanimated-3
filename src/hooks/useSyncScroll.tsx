@@ -28,11 +28,11 @@ export default function useSyncScroll(
     ) => {
       if (
         offsetCurrentScrollValue >= 0 &&
-        offsetCurrentScrollValue <= heightHeaderValue
+        offsetCurrentScrollValue <= heightHeaderValue - frozenTopOffset!
       ) {
         const closer = getCloser(
           offsetActiveScrollValue,
-          heightHeader.value - frozenTopOffset!,
+          heightHeaderValue - frozenTopOffset!,
           0
         );
 

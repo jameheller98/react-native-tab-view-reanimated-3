@@ -67,6 +67,14 @@ const scenes = SceneMap({
 // ...
 
 export const Test:FC<any> = () => {
+  const collapseHeaderOptions = useRef<
+    TTabViewContext['collapseHeaderOptions']
+  >({
+    frozenTopOffset: FROZEN_OFFSET_HEADER,
+    styleHeaderContainer: styles.headerContainer,
+    isStickHeaderOnTop: false,
+    isCollapseHeader: true,
+  }).current;
   const refTabView = useRef<RTabView>(null)
   const [routes] = useState<IRoute<TRouteData>[]>([
     { key: "1", title: "Tab 1", data: 0 },
@@ -80,7 +88,7 @@ export const Test:FC<any> = () => {
 
   return (
     <View style={{flex: 1}}>
-      <TabView ref={refTabView} routes={routes} renderScene={scenes} renderHeader={renderHeader} lazy />
+      <TabView ref={refTabView} routes={routes} renderScene={scenes} renderHeader={renderHeader} collapseHeaderOptions={collapseHeaderOptions} lazy />
     </View>
   )
 }

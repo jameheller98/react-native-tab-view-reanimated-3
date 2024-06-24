@@ -38,7 +38,7 @@ export default function useHandleScroll(
   const scrollHandler = useAnimatedScrollHandler(
     {
       onScroll: (event) => {
-        handleScrollView && runOnJS(handleScrollView)(event);
+        handleScrollView?.(event);
 
         if (!isStickHeaderOnTop) {
           const diff = event.contentOffset.y - offsetCurrentScroll.value;

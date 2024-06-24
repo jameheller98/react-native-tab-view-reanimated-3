@@ -56,8 +56,8 @@ import { TabView, SceneMap, RTabView, IRoute, ScrollViewWithCollapse } from "rea
 type TRouteData = number
 
 // NOTE: you must pass route to tab and use route key for ScrollViewWithCollapse to sync scroll
-const Tab1 = ({route} : {route:IRoute<TRouteData>}) => <ScrollViewWithCollapse key={route.key} style={{ flex: 1, backgroundColor: 'gray' }}></ScrollViewWithCollapse>
-const Tab2 = ({route} : {route:IRoute<TRouteData>}) => <ScrollViewWithCollapse key={route.key} style={{ flex: 1, backgroundColor: 'purple' }}></ScrollViewWithCollapse>
+const Tab1 = ({route} : {route:IRoute<TRouteData>}) => <ScrollViewWithCollapse id={route.key} handleScroll={(e:NativeScrollEvent) => {}} style={{ flex: 1, backgroundColor: 'gray' }}></ScrollViewWithCollapse>
+const Tab2 = ({route} : {route:IRoute<TRouteData>}) => <ScrollViewWithCollapse id={route.key} handleScroll={(e:NativeScrollEvent) => {}} style={{ flex: 1, backgroundColor: 'purple' }}></ScrollViewWithCollapse>
 
 const scenes = SceneMap({
   "1": Tab1,

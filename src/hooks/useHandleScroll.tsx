@@ -1,5 +1,5 @@
 import { useCallback, useContext, type RefObject } from 'react';
-import type { FlatList, ScrollView } from 'react-native';
+import type { FlatList, NativeScrollEvent, ScrollView } from 'react-native';
 import {
   runOnJS,
   useAnimatedScrollHandler,
@@ -11,7 +11,8 @@ import { clamp, getCloser } from '../tabViewUtils';
 
 export default function useHandleScroll(
   offsetCurrentScroll: SharedValue<number>,
-  innerScrollRef: RefObject<FlatList<any> | ScrollView>
+  innerScrollRef: RefObject<FlatList<any> | ScrollView>,
+  handleScrollView?: (event: NativeScrollEvent) => void
 ) {
   const {
     collapseHeaderOptions: { frozenTopOffset, isStickHeaderOnTop },
@@ -37,6 +38,8 @@ export default function useHandleScroll(
   const scrollHandler = useAnimatedScrollHandler(
     {
       onScroll: (event) => {
+        handleScrollView && runOnJS(handleScrollView)(event);
+
         if (!isStickHeaderOnTop) {
           const diff = event.contentOffset.y - offsetCurrentScroll.value;
 
@@ -81,7 +84,7 @@ export default function useHandleScroll(
         }
       },
     },
-    [frozenTopOffset, isStickHeaderOnTop, handleAutoScroll]
+    [frozenTopOffset, isStickHeaderOnTop, handleAutoScroll, handleScrollView]
   );
 
   return scrollHandler;

@@ -5,7 +5,11 @@ import React, {
   useRef,
   type ComponentClass,
 } from 'react';
-import { FlatList, type FlatListProps } from 'react-native';
+import {
+  FlatList,
+  type FlatListProps,
+  type NativeScrollEvent,
+} from 'react-native';
 import Animated, { useSharedValue } from 'react-native-reanimated';
 import useEnabledScroll from '../hooks/useEnabledScroll';
 import useHandleScroll from '../hooks/useHandleScroll';
@@ -17,10 +21,21 @@ function withCollapseFlatListComponent<T>(
   Component: ComponentClass<FlatListProps<T>>
 ) {
   return memo(
-    forwardRef<FlatList, FlatListProps<T> & { id: string }>((props, ref) => {
+    forwardRef<
+      FlatList,
+      FlatListProps<T> & {
+        id: string;
+        handleScroll?: (event: NativeScrollEvent) => void;
+      }
+    >((props, ref) => {
       const offsetCurrentScroll = useSharedValue(0);
       const innerScrollRef = useRef<FlatList>(null);
-      const { id, contentContainerStyle, ...rest } = props;
+      const {
+        id,
+        handleScroll: handleScrollFlatList,
+        contentContainerStyle,
+        ...rest
+      } = props;
 
       useImperativeHandle(ref, () => innerScrollRef.current!, []);
 
@@ -32,7 +47,11 @@ function withCollapseFlatListComponent<T>(
         contentContainerStyle
       );
 
-      const handleScroll = useHandleScroll(offsetCurrentScroll, innerScrollRef);
+      const handleScroll = useHandleScroll(
+        offsetCurrentScroll,
+        innerScrollRef,
+        handleScrollFlatList
+      );
 
       const handleInitScroll = useInitScroll(innerScrollRef, id);
 

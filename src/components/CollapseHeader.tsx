@@ -28,6 +28,8 @@ const CollapseHeader = ({
   );
 
   const styledHeaderCollapseAnimated = useAnimatedStyle(() => {
+    if (!collapseHeaderOptions.isCollapseHeader) return {};
+
     const translateY = interpolate(
       offsetActiveScrollView.value,
       [0, heightHeader.value - collapseHeaderOptions.frozenTopOffset],

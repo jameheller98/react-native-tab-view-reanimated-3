@@ -1,20 +1,25 @@
 import React, { memo, useCallback, useContext } from 'react';
 import { View, type LayoutChangeEvent } from 'react-native';
 import { SyncedScrollableContext } from '../contexts/SyncedScrollableContext';
-import type { TTabBar, TTabView } from '../tabView.types';
+import type { TCollapseHeader, TTabBar, TTabView } from '../tabView.types';
 import { TabBar } from './TabBar';
 
 const WrapperTabBar = <T,>(
-  props: TTabBar<T> & Pick<TTabView<T>, 'renderTabBar'>
+  props: TTabBar<T> &
+    Pick<TTabView<T>, 'renderTabBar'> &
+    Pick<TCollapseHeader, 'collapseHeaderOptions'>
 ) => {
   const { heightTabBar } = useContext(SyncedScrollableContext);
-  const { renderTabBar, ...rest } = props;
+  const { renderTabBar, collapseHeaderOptions, ...rest } = props;
 
   const handleLayout = useCallback(
-    (e: LayoutChangeEvent) =>
-      (heightTabBar.value = e.nativeEvent.layout.height),
+    (e: LayoutChangeEvent) => {
+      if (collapseHeaderOptions.isCollapseHeader) {
+        heightTabBar.value = e.nativeEvent.layout.height;
+      }
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [collapseHeaderOptions]
   );
 
   return (

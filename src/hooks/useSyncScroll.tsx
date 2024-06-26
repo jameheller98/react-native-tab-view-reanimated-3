@@ -5,18 +5,17 @@ import {
   useAnimatedReaction,
   type SharedValue,
 } from 'react-native-reanimated';
+import { useCollapseHeaderOptionsContext } from '../contexts/CollapseHeaderOptionsContext';
 import { SyncedScrollableContext } from '../contexts/SyncedScrollableContext';
-import { useContextTabView } from '../contexts/TabViewContext';
 import { getCloser } from '../tabViewUtils';
 
 export default function useSyncScroll(
   innerScrollRef: RefObject<FlatList<any> | ScrollView>,
   id: string,
-  offsetCurrentScroll: SharedValue<number>
+  offsetCurrentScroll: SharedValue<number>,
+  idTabView?: string
 ) {
-  const {
-    collapseHeaderOptions: { frozenTopOffset },
-  } = useContextTabView();
+  const { frozenTopOffset } = useCollapseHeaderOptionsContext(idTabView);
   const { activeScrollViewID, offsetActiveScrollView, heightHeader } =
     useContext(SyncedScrollableContext);
 

@@ -51,14 +51,14 @@ export const Test:FC<any> = () => {
 ## Quick start with collapse header
 
 ```js
-import { TabView, SceneMap, RTabView, IRoute, ScrollViewWithCollapse } from "react-native-tab-view-reanimated-3";
+import { TabView, SceneMap, RTabView, IRoute, TCollapseHeaderOptions, ScrollViewWithCollapse } from "react-native-tab-view-reanimated-3";
 
 type TRouteData = number
 
 // NOTE: you must pass route to tab and use route key for ScrollViewWithCollapse to sync scroll
 // NOTE: handleScroll is function on UI should you have 'worklet' in first function
-const Tab1 = ({route} : {route:IRoute<TRouteData>}) => <ScrollViewWithCollapse id={route.key} handleScroll={(e:NativeScrollEvent) => {"worklet"}} style={{ flex: 1, backgroundColor: 'gray' }}></ScrollViewWithCollapse>
-const Tab2 = ({route} : {route:IRoute<TRouteData>}) => <ScrollViewWithCollapse id={route.key} handleScroll={(e:NativeScrollEvent) => {"worklet"}} style={{ flex: 1, backgroundColor: 'purple' }}></ScrollViewWithCollapse>
+const Tab1 = ({route} : {route:IRoute<TRouteData>}) => <ScrollViewWithCollapse id={route.key} idTabView='test' handleScroll={(e:NativeScrollEvent) => {"worklet"}} style={{ flex: 1, backgroundColor: 'gray' }}></ScrollViewWithCollapse>
+const Tab2 = ({route} : {route:IRoute<TRouteData>}) => <ScrollViewWithCollapse id={route.key} idTabView='test' handleScroll={(e:NativeScrollEvent) => {"worklet"}} style={{ flex: 1, backgroundColor: 'purple' }}></ScrollViewWithCollapse>
 
 const scenes = SceneMap({
   "1": Tab1,
@@ -69,7 +69,7 @@ const scenes = SceneMap({
 
 export const Test:FC<any> = () => {
   const collapseHeaderOptions = useRef<
-    TTabViewContext['collapseHeaderOptions']
+    TCollapseHeaderOptions
   >({
     frozenTopOffset: FROZEN_OFFSET_HEADER,
     styleHeaderContainer: styles.headerContainer,
@@ -89,7 +89,7 @@ export const Test:FC<any> = () => {
 
   return (
     <View style={{flex: 1}}>
-      <TabView ref={refTabView} routes={routes} renderScene={scenes} renderHeader={renderHeader} collapseHeaderOptions={collapseHeaderOptions} lazy />
+      <TabView idTabView='test' ref={refTabView} routes={routes} renderScene={scenes} renderHeader={renderHeader} collapseHeaderOptions={collapseHeaderOptions} lazy />
     </View>
   )
 }
@@ -108,7 +108,7 @@ export const Test:FC<any> = () => {
 |     `renderTabBar`      |                             `(props: TTabBar<T>) => ReactElement`                              |    `(props: TTabBar<T>) => <TabBar {...props} />`     |              Function to custom render tab bar               |
 |     `renderHeader`      | `({ offsetActiveScrollView }:{ offsetActiveScrollView: SharedValue<number> }) => ReactElement` |                                                       | If set props auto header is rendered, custom header function |
 |          `ref`          |                                           `RTabView`                                           |                                                       |                         Ref tav view                         |
-| `collapseHeaderOptions` |                           `TTabViewContext['collapseHeaderOptions']`                           | {frozenTopOffset: 0; styleHeaderContainer: undefined} |                    Option collapse header                    |
+| `collapseHeaderOptions` |                                    `TCollapseHeaderOptions`                                    | {frozenTopOffset: 0; styleHeaderContainer: undefined} |                    Option collapse header                    |
 
 ### IRoute<T>
 
@@ -140,7 +140,7 @@ export const Test:FC<any> = () => {
 | position | `SharedValue<number>` |
 |  index   |       `number`        |
 
-### TTabViewContext['collapseHeaderOptions']
+### TCollapseHeaderOptions
 
 |        props         |          type          |                                                       description                                                        |
 | :------------------: | :--------------------: | :----------------------------------------------------------------------------------------------------------------------: |

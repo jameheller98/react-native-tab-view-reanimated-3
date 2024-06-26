@@ -53,12 +53,12 @@ export type TTabView<T> = {
   lazy?: boolean;
   defaultIndexTab?: number;
   scrollEnabled?: boolean;
+  collapseHeaderOptions?: Partial<TCollapseHeaderOptions>;
+  idTabView?: string;
   renderTabBar?: (props: TTabBar<T>) => ReactElement;
   renderScene: ({ route }: { route: IRoute<T> }) => ReactElement;
   onChangeTab?: (currentIndexTab: number) => void;
-} & Partial<Pick<TCollapseHeader, 'renderHeader'>> &
-  TTabViewContext;
-
+} & Partial<Pick<TCollapseHeader, 'renderHeader'>>;
 export type RTabView = {
   setIndexTab: (indexTab: number) => void;
   setIsSwipe: (isSwipe: boolean) => void;
@@ -95,6 +95,7 @@ export type TScene<T> = {
 
 export type TCollapseHeader = {
   children: Element;
+  collapseHeaderOptions: NonNullable<TCollapseHeaderOptions>;
   renderHeader: ({
     offsetActiveScrollView,
   }: {
@@ -108,11 +109,9 @@ export type THeightControl = {
   heightRoot: number;
 };
 
-export type TTabViewContext = {
-  collapseHeaderOptions?: {
-    frozenTopOffset?: number;
-    styleHeaderContainer?: StyleProp<ViewStyle>;
-    isStickHeaderOnTop?: boolean;
-    isCollapseHeader?: boolean;
-  };
+export type TCollapseHeaderOptions = {
+  frozenTopOffset: number;
+  styleHeaderContainer?: StyleProp<ViewStyle>;
+  isStickHeaderOnTop: boolean;
+  isCollapseHeader: boolean;
 };

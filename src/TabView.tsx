@@ -2,6 +2,7 @@ import React, {
   forwardRef,
   memo,
   useImperativeHandle,
+  useMemo,
   useRef,
   type ForwardedRef,
 } from 'react';
@@ -12,15 +13,16 @@ import { withCollapseHeaderComponent } from './HOCs/withCollapseHeaderComponent'
 import { withSetHeightRoot } from './HOCs/withSetHeightRoot';
 import Scene from './components/Scene';
 import WrapperTabBar from './components/WrapperTabBar';
+import { CollapseHeaderOptionsContextProvider } from './contexts/CollapseHeaderOptionsContext';
 import {
   SyncedScrollableContext,
   syncedScrollableState,
 } from './contexts/SyncedScrollableContext';
-import { TabViewContext } from './contexts/TabViewContext';
 import useTabViewHook from './hooks/useTabViewHook';
 import type {
   PagerViewInternal,
   RTabView,
+  TCollapseHeaderOptions,
   TTabBar,
   TTabView,
 } from './tabView.types';
@@ -34,6 +36,7 @@ const WrapperTabBarWithCollapseHeader = withCollapseHeaderComponent(
   props: TTabBar<T> &
     Pick<TTabView<T>, 'renderTabBar' | 'renderHeader'> & {
       isCollapseHeader?: boolean;
+      collapseHeaderOptions: TCollapseHeaderOptions;
     }
 ) => React.ReactElement<T>;
 
@@ -46,6 +49,7 @@ export const TabView = memo(
         defaultIndexTab = 0,
         scrollEnabled = true,
         collapseHeaderOptions,
+        idTabView,
         renderTabBar,
         renderHeader,
         renderScene,
@@ -54,9 +58,18 @@ export const TabView = memo(
       ref: ForwardedRef<RTabView>
     ) => {
       const paperViewRef = useRef<PagerViewInternal>(null);
-      const tabViewContextValueMemo = useRef({
-        collapseHeaderOptions: collapseHeaderOptions || {},
-      }).current;
+      const collapseHeaderOptionsState = useMemo(() => {
+        const defaultCollapseHeaderOptions = Object.assign(
+          {
+            frozenTopOffset: 0,
+            isStickHeaderOnTop: true,
+            isCollapseHeader: false,
+          } as TCollapseHeaderOptions,
+          collapseHeaderOptions
+        );
+
+        return defaultCollapseHeaderOptions;
+      }, [collapseHeaderOptions]);
       const {
         position,
         currentIndex,
@@ -89,18 +102,25 @@ export const TabView = memo(
       }, []);
 
       return (
-        <TabViewContext.Provider value={tabViewContextValueMemo}>
-          <SyncedScrollableContext.Provider value={syncedScrollableState}>
-            <ViewWithSetHeightRoot style={styles.container}>
-              <WrapperTabBarWithCollapseHeader
-                renderTabBar={renderTabBar}
-                renderHeader={renderHeader}
-                routes={routes}
-                position={position}
-                currentIndex={currentIndex}
-                paperViewRef={paperViewRef}
-                pageScrollState={pageScrollState}
-              />
+        <SyncedScrollableContext.Provider value={syncedScrollableState}>
+          <ViewWithSetHeightRoot
+            style={styles.container}
+            collapseHeaderOptions={collapseHeaderOptionsState}
+          >
+            <WrapperTabBarWithCollapseHeader
+              renderTabBar={renderTabBar}
+              renderHeader={renderHeader}
+              routes={routes}
+              position={position}
+              currentIndex={currentIndex}
+              paperViewRef={paperViewRef}
+              pageScrollState={pageScrollState}
+              collapseHeaderOptions={collapseHeaderOptionsState}
+            />
+            <CollapseHeaderOptionsContextProvider
+              collapseHeaderOptions={collapseHeaderOptionsState}
+              idTabView={idTabView}
+            >
               <AnimatedPagerView
                 //@ts-ignore
                 ref={paperViewRef}
@@ -125,9 +145,9 @@ export const TabView = memo(
                   </View>
                 ))}
               </AnimatedPagerView>
-            </ViewWithSetHeightRoot>
-          </SyncedScrollableContext.Provider>
-        </TabViewContext.Provider>
+            </CollapseHeaderOptionsContextProvider>
+          </ViewWithSetHeightRoot>
+        </SyncedScrollableContext.Provider>
       );
     }
   )

@@ -6,27 +6,32 @@ import Animated, {
   useAnimatedStyle,
 } from 'react-native-reanimated';
 import { SyncedScrollableContext } from '../contexts/SyncedScrollableContext';
-import { useContextTabView } from '../contexts/TabViewContext';
 import type { TCollapseHeader } from '../tabView.types';
 
-const CollapseHeader = ({ children, renderHeader }: TCollapseHeader) => {
-  const { collapseHeaderOptions } = useContextTabView();
+const CollapseHeader = ({
+  children,
+  collapseHeaderOptions,
+  renderHeader,
+}: TCollapseHeader) => {
   const { heightHeader, offsetActiveScrollView } = useContext(
     SyncedScrollableContext
   );
 
   const handleLayout = useCallback(
-    (e: LayoutChangeEvent) =>
-      (heightHeader.value = e.nativeEvent.layout.height),
+    (e: LayoutChangeEvent) => {
+      if (collapseHeaderOptions.isCollapseHeader) {
+        heightHeader.value = e.nativeEvent.layout.height;
+      }
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [collapseHeaderOptions]
   );
 
   const styledHeaderCollapseAnimated = useAnimatedStyle(() => {
     const translateY = interpolate(
       offsetActiveScrollView.value,
-      [0, heightHeader.value - collapseHeaderOptions!.frozenTopOffset!],
-      [0, -heightHeader.value + collapseHeaderOptions!.frozenTopOffset!],
+      [0, heightHeader.value - collapseHeaderOptions.frozenTopOffset],
+      [0, -heightHeader.value + collapseHeaderOptions.frozenTopOffset],
       Extrapolation.CLAMP
     );
 

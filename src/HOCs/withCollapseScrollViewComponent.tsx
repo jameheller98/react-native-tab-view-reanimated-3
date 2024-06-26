@@ -21,6 +21,7 @@ function withCollapseScrollViewComponent(
       ScrollView,
       Animated.AnimatedScrollViewProps & {
         id: string;
+        idTabView: string;
         handleScroll?: (event: NativeScrollEvent) => void;
       }
     >((props, ref) => {
@@ -28,6 +29,7 @@ function withCollapseScrollViewComponent(
       const innerScrollRef = useRef<ScrollView>(null);
       const {
         id,
+        idTabView,
         handleScroll: handleScrollView,
         contentContainerStyle,
         ...rest
@@ -37,7 +39,7 @@ function withCollapseScrollViewComponent(
 
       useEnabledScroll(innerScrollRef, id);
 
-      useSyncScroll(innerScrollRef, id, offsetCurrentScroll);
+      useSyncScroll(innerScrollRef, id, offsetCurrentScroll, idTabView);
 
       const styleContainerComponent = useAnimatedStyleCollapseScroll(
         contentContainerStyle
@@ -46,6 +48,7 @@ function withCollapseScrollViewComponent(
       const handleScroll = useHandleScroll(
         offsetCurrentScroll,
         innerScrollRef,
+        idTabView,
         handleScrollView
       );
 

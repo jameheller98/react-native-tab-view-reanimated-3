@@ -100,6 +100,8 @@ export const TabView = memo(
             paperViewRef.current.setScrollEnabled(isSwipe);
           },
           clean: () => {
+            position.value = 0;
+            currentIndex.value = 0;
             syncedScrollableState.activeScrollViewID.value = '';
             syncedScrollableState.heightHeader.value = 0;
             syncedScrollableState.heightRoot.value = 0;
@@ -114,6 +116,7 @@ export const TabView = memo(
             }, 0);
           },
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
       }, []);
 
       return (

@@ -1,14 +1,15 @@
+import { useAtomValue } from 'jotai';
 import type { ComponentType } from 'react';
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback } from 'react';
 import type { LayoutChangeEvent, ViewProps } from 'react-native';
-import { SyncedScrollableContext } from '../contexts/SyncedScrollableContext';
+import { syncedScrollableAtomReadOnly } from '../atoms/syncedScrollableAtom';
 import type { TCollapseHeader } from '../tabView.types';
 
 export function withSetHeightRoot(Component: ComponentType<ViewProps>) {
   return (
     props: ViewProps & Pick<TCollapseHeader, 'collapseHeaderOptions'>
   ) => {
-    const { heightRoot } = useContext(SyncedScrollableContext);
+    const { heightRoot } = useAtomValue(syncedScrollableAtomReadOnly);
 
     const handleLayout = useCallback(
       (e: LayoutChangeEvent) => {

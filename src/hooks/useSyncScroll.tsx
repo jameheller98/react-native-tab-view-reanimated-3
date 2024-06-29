@@ -1,12 +1,13 @@
-import { useCallback, useContext, type RefObject } from 'react';
+import { useAtomValue } from 'jotai';
+import { useCallback, type RefObject } from 'react';
 import type { FlatList, ScrollView } from 'react-native';
 import {
   runOnJS,
   useAnimatedReaction,
   type SharedValue,
 } from 'react-native-reanimated';
+import { syncedScrollableAtomReadOnly } from '../atoms/syncedScrollableAtom';
 import { useCollapseHeaderOptionsContext } from '../contexts/CollapseHeaderOptionsContext';
-import { SyncedScrollableContext } from '../contexts/SyncedScrollableContext';
 import { getCloser } from '../tabViewUtils';
 
 export default function useSyncScroll(
@@ -17,7 +18,7 @@ export default function useSyncScroll(
 ) {
   const { frozenTopOffset } = useCollapseHeaderOptionsContext(idTabView);
   const { activeScrollViewID, offsetActiveScrollView, heightHeader } =
-    useContext(SyncedScrollableContext);
+    useAtomValue(syncedScrollableAtomReadOnly);
 
   const handleSyncScroll = useCallback(
     (

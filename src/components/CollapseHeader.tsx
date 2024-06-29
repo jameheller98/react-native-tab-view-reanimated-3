@@ -1,11 +1,12 @@
-import React, { useCallback, useContext, type ReactNode } from 'react';
+import { useAtomValue } from 'jotai';
+import React, { useCallback, type ReactNode } from 'react';
 import { StyleSheet, View, type LayoutChangeEvent } from 'react-native';
 import Animated, {
   Extrapolation,
   interpolate,
   useAnimatedStyle,
 } from 'react-native-reanimated';
-import { SyncedScrollableContext } from '../contexts/SyncedScrollableContext';
+import { syncedScrollableAtomReadOnly } from '../atoms/syncedScrollableAtom';
 import type { TCollapseHeader } from '../tabView.types';
 
 const CollapseHeader = ({
@@ -13,8 +14,8 @@ const CollapseHeader = ({
   collapseHeaderOptions,
   renderHeader,
 }: TCollapseHeader) => {
-  const { heightHeader, offsetActiveScrollView } = useContext(
-    SyncedScrollableContext
+  const { offsetActiveScrollView, heightHeader } = useAtomValue(
+    syncedScrollableAtomReadOnly
   );
 
   const handleLayout = useCallback(

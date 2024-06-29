@@ -1,7 +1,8 @@
-import { useCallback, useContext } from 'react';
+import { useAtomValue } from 'jotai';
+import { useCallback } from 'react';
 import type { NativeSyntheticEvent } from 'react-native';
 import { useSharedValue } from 'react-native-reanimated';
-import { SyncedScrollableContext } from '../contexts/SyncedScrollableContext';
+import { syncedScrollableAtomReadOnly } from '../atoms/syncedScrollableAtom';
 import type { TCollapseHeaderOptions, TTabView } from '../tabView.types';
 import { usePagerScrollHandler } from './usePagerScrollHandler';
 
@@ -16,7 +17,7 @@ export default function useTabViewHook<T>({
   collapseHeaderOptions: TCollapseHeaderOptions;
   onChangeTab?: (currentIndexTab: number) => void;
 }) {
-  const { activeScrollViewID } = useContext(SyncedScrollableContext);
+  const { activeScrollViewID } = useAtomValue(syncedScrollableAtomReadOnly);
   const position = useSharedValue(defaultIndexTab);
   const currentIndex = useSharedValue(defaultIndexTab);
   const pageScrollState = useSharedValue<'idle' | 'dragging' | 'settling'>(

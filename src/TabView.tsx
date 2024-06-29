@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai';
 import React, {
   forwardRef,
   memo,
@@ -11,14 +12,12 @@ import { StyleSheet, View } from 'react-native';
 import PagerView from 'react-native-pager-view';
 import Animated from 'react-native-reanimated';
 import { withCollapseHeaderComponent } from './HOCs/withCollapseHeaderComponent';
+import withProviderJotai from './HOCs/withProviderJotai';
 import { withSetHeightRoot } from './HOCs/withSetHeightRoot';
+import { syncedScrollableAtomReadOnly } from './atoms/syncedScrollableAtom';
 import Scene from './components/Scene';
 import WrapperTabBar from './components/WrapperTabBar';
 import { CollapseHeaderOptionsContextProvider } from './contexts/CollapseHeaderOptionsContext';
-import {
-  SyncedScrollableContext,
-  syncedScrollableState,
-} from './contexts/SyncedScrollableContext';
 import useTabViewHook from './hooks/useTabViewHook';
 import type {
   PagerViewInternal,
@@ -41,87 +40,90 @@ const WrapperTabBarWithCollapseHeader = withCollapseHeaderComponent(
     }
 ) => React.ReactElement<T>;
 
-export const TabView = memo(
-  forwardRef(
-    <T,>(
-      {
-        routes,
-        lazy = false,
-        defaultIndexTab = 0,
-        scrollEnabled = true,
-        collapseHeaderOptions,
-        idTabView,
-        renderTabBar,
-        renderHeader,
-        renderScene,
-        onChangeTab,
-      }: TTabView<T>,
-      ref: ForwardedRef<RTabView>
-    ) => {
-      const paperViewRef = useRef<PagerViewInternal>(null);
-      const timeoutReset = useRef<NodeJS.Timeout>();
-      const [isReset, setIsReset] = useState(false);
-      const collapseHeaderOptionsState = useMemo(() => {
-        const defaultCollapseHeaderOptions = Object.assign(
-          {
-            frozenTopOffset: 0,
-            isStickHeaderOnTop: true,
-            isCollapseHeader: false,
-          } as TCollapseHeaderOptions,
-          collapseHeaderOptions
+export const TabView = withProviderJotai(
+  memo(
+    forwardRef(
+      <T,>(
+        {
+          routes,
+          lazy = false,
+          defaultIndexTab = 0,
+          scrollEnabled = true,
+          collapseHeaderOptions,
+          idTabView,
+          renderTabBar,
+          renderHeader,
+          renderScene,
+          onChangeTab,
+        }: TTabView<T>,
+        ref: ForwardedRef<RTabView>
+      ) => {
+        const syncedScrollableState = useAtomValue(
+          syncedScrollableAtomReadOnly
         );
+        const paperViewRef = useRef<PagerViewInternal>(null);
+        const timeoutReset = useRef<NodeJS.Timeout>();
+        const [isReset, setIsReset] = useState(false);
+        const collapseHeaderOptionsState = useMemo(() => {
+          const defaultCollapseHeaderOptions = Object.assign(
+            {
+              frozenTopOffset: 0,
+              isStickHeaderOnTop: true,
+              isCollapseHeader: false,
+            } as TCollapseHeaderOptions,
+            collapseHeaderOptions
+          );
 
-        return defaultCollapseHeaderOptions;
-      }, [collapseHeaderOptions]);
-      const {
-        position,
-        currentIndex,
-        pageScrollState,
-        handlePageScroll,
-        handlePageScrollStateChanged,
-        handlePageSelected,
-      } = useTabViewHook<T>({
-        defaultIndexTab,
-        routes,
-        collapseHeaderOptions: collapseHeaderOptionsState,
-        onChangeTab,
-      });
+          return defaultCollapseHeaderOptions;
+        }, [collapseHeaderOptions]);
+        const {
+          position,
+          currentIndex,
+          pageScrollState,
+          handlePageScroll,
+          handlePageScrollStateChanged,
+          handlePageSelected,
+        } = useTabViewHook<T>({
+          defaultIndexTab,
+          routes,
+          collapseHeaderOptions: collapseHeaderOptionsState,
+          onChangeTab,
+        });
 
-      useImperativeHandle(ref, () => {
-        return {
-          setIndexTab: (indexTab: number) => {
-            if (!paperViewRef.current) return;
+        useImperativeHandle(ref, () => {
+          return {
+            setIndexTab: (indexTab: number) => {
+              if (!paperViewRef.current) return;
 
-            paperViewRef.current.setPage(indexTab);
-          },
-          setIsSwipe: (isSwipe: boolean) => {
-            if (!paperViewRef.current) return;
+              paperViewRef.current.setPage(indexTab);
+            },
+            setIsSwipe: (isSwipe: boolean) => {
+              if (!paperViewRef.current) return;
 
-            paperViewRef.current.setScrollEnabled(isSwipe);
-          },
-          clean: () => {
-            position.value = 0;
-            currentIndex.value = 0;
-            syncedScrollableState.activeScrollViewID.value = '';
-            syncedScrollableState.heightHeader.value = 0;
-            syncedScrollableState.heightRoot.value = 0;
-            syncedScrollableState.heightTabBar.value = 0;
-            syncedScrollableState.offsetActiveScrollView.value = 0;
-          },
-          reset: () => {
-            clearTimeout(timeoutReset.current);
-            setIsReset(true);
-            timeoutReset.current = setTimeout(() => {
-              setIsReset(false);
-            }, 0);
-          },
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, []);
+              paperViewRef.current.setScrollEnabled(isSwipe);
+            },
+            clean: () => {
+              position.value = 0;
+              currentIndex.value = 0;
+              syncedScrollableState.activeScrollViewID.value = '';
+              syncedScrollableState.heightHeader.value = 0;
+              syncedScrollableState.heightRoot.value = 0;
+              syncedScrollableState.heightTabBar.value = 0;
+              syncedScrollableState.offsetActiveScrollView.value = 0;
+            },
+            reset: () => {
+              clearTimeout(timeoutReset.current);
+              setIsReset(true);
+              timeoutReset.current = setTimeout(() => {
+                setIsReset(false);
+              }, 0);
+            },
+          };
+          // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, []);
 
-      return (
-        !isReset && (
-          <SyncedScrollableContext.Provider value={syncedScrollableState}>
+        return (
+          !isReset && (
             <ViewWithSetHeightRoot
               style={styles.container}
               collapseHeaderOptions={collapseHeaderOptionsState}
@@ -170,10 +172,10 @@ export const TabView = memo(
                 </AnimatedPagerView>
               </CollapseHeaderOptionsContextProvider>
             </ViewWithSetHeightRoot>
-          </SyncedScrollableContext.Provider>
-        )
-      );
-    }
+          )
+        );
+      }
+    )
   )
 );
 

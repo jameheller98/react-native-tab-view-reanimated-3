@@ -14,7 +14,7 @@ export default function useSyncScroll(
   id: string,
   offsetCurrentScroll: SharedValue<number>
 ) {
-  const { minHeightHeader } = useContext(CollapseHeaderOptionsContext);
+  const { minHeightHeader, isSnap } = useContext(CollapseHeaderOptionsContext);
   const { activeScrollViewID, offsetActiveScrollView, heightHeader } =
     useContext(SyncedScrollableState);
 
@@ -36,16 +36,16 @@ export default function useSyncScroll(
 
         (innerScrollRef.current as ScrollView)?.scrollTo?.({
           animated: false,
-          y: closer,
+          y: isSnap ? closer : offsetActiveScrollValue,
         });
         (innerScrollRef.current as FlatList)?.scrollToOffset?.({
           animated: false,
-          offset: closer,
+          offset: isSnap ? closer : offsetActiveScrollValue,
         });
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [minHeightHeader]
+    [minHeightHeader, isSnap]
   );
 
   useAnimatedReaction(

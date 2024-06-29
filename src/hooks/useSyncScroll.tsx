@@ -1,26 +1,22 @@
-import { useAtomValue, type PrimitiveAtom } from 'jotai';
-import { useCallback, type RefObject } from 'react';
+import { useCallback, useContext, type RefObject } from 'react';
 import type { FlatList, ScrollView } from 'react-native';
 import {
   runOnJS,
   useAnimatedReaction,
   type SharedValue,
 } from 'react-native-reanimated';
-import { syncedScrollableAtomReadOnly } from '../atoms/syncedScrollableAtom';
-import { useCollapseHeaderOptionsContext } from '../contexts/CollapseHeaderOptionsContext';
-import type { TStateScrollable } from '../tabView.types';
+import { CollapseHeaderOptionsContext } from '../contexts/CollapseHeaderOptionsContext';
+import { SyncedScrollableState } from '../contexts/SyncedScrollableState';
 import { getCloser } from '../tabViewUtils';
 
 export default function useSyncScroll(
   innerScrollRef: RefObject<FlatList<any> | ScrollView>,
   id: string,
-  offsetCurrentScroll: SharedValue<number>,
-  idTabView?: string,
-  syncScrollableAtom?: PrimitiveAtom<TStateScrollable>
+  offsetCurrentScroll: SharedValue<number>
 ) {
-  const { frozenTopOffset } = useCollapseHeaderOptionsContext(idTabView);
+  const { minHeightHeader } = useContext(CollapseHeaderOptionsContext);
   const { activeScrollViewID, offsetActiveScrollView, heightHeader } =
-    useAtomValue(syncScrollableAtom || syncedScrollableAtomReadOnly);
+    useContext(SyncedScrollableState);
 
   const handleSyncScroll = useCallback(
     (
@@ -30,11 +26,11 @@ export default function useSyncScroll(
     ) => {
       if (
         offsetCurrentScrollValue >= 0 &&
-        offsetCurrentScrollValue <= heightHeaderValue - frozenTopOffset!
+        offsetCurrentScrollValue <= heightHeaderValue - minHeightHeader!
       ) {
         const closer = getCloser(
           offsetActiveScrollValue,
-          heightHeaderValue - frozenTopOffset!,
+          heightHeaderValue - minHeightHeader!,
           0
         );
 
@@ -49,7 +45,7 @@ export default function useSyncScroll(
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [frozenTopOffset]
+    [minHeightHeader]
   );
 
   useAnimatedReaction(

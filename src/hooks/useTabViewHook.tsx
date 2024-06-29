@@ -1,28 +1,20 @@
-import { useAtomValue, type PrimitiveAtom } from 'jotai';
 import { useCallback } from 'react';
 import type { NativeSyntheticEvent } from 'react-native';
-import { useSharedValue } from 'react-native-reanimated';
-import type {
-  TCollapseHeaderOptions,
-  TStateScrollable,
-  TTabView,
-} from '../tabView.types';
+import { useSharedValue, type SharedValue } from 'react-native-reanimated';
+import type { TTabView } from '../tabView.types';
 import { usePagerScrollHandler } from './usePagerScrollHandler';
 
 export default function useTabViewHook<T>({
   defaultIndexTab,
   routes,
-  collapseHeaderOptions,
-  syncScrollableAtom,
+  activeScrollViewID,
   onChangeTab,
 }: {
   defaultIndexTab: number;
   routes: TTabView<T>['routes'];
-  collapseHeaderOptions: TCollapseHeaderOptions;
-  syncScrollableAtom: PrimitiveAtom<TStateScrollable>;
+  activeScrollViewID: SharedValue<string>;
   onChangeTab?: (currentIndexTab: number) => void;
 }) {
-  const { activeScrollViewID } = useAtomValue(syncScrollableAtom);
   const position = useSharedValue(defaultIndexTab);
   const currentIndex = useSharedValue(defaultIndexTab);
   const pageScrollState = useSharedValue<'idle' | 'dragging' | 'settling'>(
@@ -58,14 +50,12 @@ export default function useTabViewHook<T>({
     ): void | Promise<void> => {
       currentIndex.value = e.nativeEvent.position;
 
-      if (collapseHeaderOptions.isCollapseHeader) {
-        activeScrollViewID.value = routes[e.nativeEvent.position]!.key;
-      }
+      activeScrollViewID.value = routes[e.nativeEvent.position]!.key;
 
       onChangeTab && onChangeTab(e.nativeEvent.position);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [routes, collapseHeaderOptions]
+    [routes]
   );
 
   return {

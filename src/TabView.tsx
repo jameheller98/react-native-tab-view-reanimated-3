@@ -1,26 +1,24 @@
-import { Provider } from 'jotai';
 import React, {
   forwardRef,
   memo,
   useImperativeHandle,
   useMemo,
   useRef,
-  useState,
   type ForwardedRef,
 } from 'react';
 import { StyleSheet, View } from 'react-native';
 import PagerView from 'react-native-pager-view';
-import Animated from 'react-native-reanimated';
+import Animated, { makeMutable } from 'react-native-reanimated';
 import { withCollapseHeaderComponent } from './HOCs/withCollapseHeaderComponent';
 import { withSetHeightRoot } from './HOCs/withSetHeightRoot';
 import Scene from './components/Scene';
 import WrapperTabBar from './components/WrapperTabBar';
-import { CollapseHeaderOptionsContextProvider } from './contexts/CollapseHeaderOptionsContext';
+import { CollapseHeaderOptionsContext } from './contexts/CollapseHeaderOptionsContext';
+import { SyncedScrollableState } from './contexts/SyncedScrollableState';
 import useTabViewHook from './hooks/useTabViewHook';
 import type {
   PagerViewInternal,
   RTabView,
-  TCollapseHeaderOptions,
   TTabBar,
   TTabView,
 } from './tabView.types';
@@ -31,14 +29,7 @@ const ViewWithSetHeightRoot = withSetHeightRoot(View);
 const WrapperTabBarWithCollapseHeader = withCollapseHeaderComponent(
   WrapperTabBar
 ) as <T>(
-  props: TTabBar<T> &
-    Pick<
-      TTabView<T>,
-      'renderTabBar' | 'renderHeader' | 'syncScrollableAtom'
-    > & {
-      isCollapseHeader?: boolean;
-      collapseHeaderOptions: TCollapseHeaderOptions;
-    }
+  props: TTabBar<T> & Pick<TTabView<T>, 'renderTabBar' | 'renderHeader'>
 ) => React.ReactElement<T>;
 
 export const TabView = memo(
@@ -48,10 +39,11 @@ export const TabView = memo(
         routes,
         lazy = false,
         defaultIndexTab = 0,
-        scrollEnabled = true,
-        collapseHeaderOptions,
-        idTabView,
-        syncScrollableAtom,
+        swipeEnabled = true,
+        isSnap,
+        revealHeaderOnScroll,
+        minHeightHeader,
+        styleHeaderContainer,
         renderTabBar,
         renderHeader,
         renderScene,
@@ -59,21 +51,17 @@ export const TabView = memo(
       }: TTabView<T>,
       ref: ForwardedRef<RTabView>
     ) => {
+      const syncedScrollableState = useMemo(
+        () => ({
+          activeScrollViewID: makeMutable(''),
+          offsetActiveScrollView: makeMutable(0),
+          heightHeader: makeMutable(0),
+          heightTabBar: makeMutable(0),
+          heightRoot: makeMutable(0),
+        }),
+        []
+      );
       const paperViewRef = useRef<PagerViewInternal>(null);
-      const timeoutReset = useRef<NodeJS.Timeout>();
-      const [isReset, setIsReset] = useState(false);
-      const collapseHeaderOptionsState = useMemo(() => {
-        const defaultCollapseHeaderOptions = Object.assign(
-          {
-            frozenTopOffset: 0,
-            isStickHeaderOnTop: true,
-            isCollapseHeader: false,
-          } as TCollapseHeaderOptions,
-          collapseHeaderOptions
-        );
-
-        return defaultCollapseHeaderOptions;
-      }, [collapseHeaderOptions]);
       const {
         position,
         currentIndex,
@@ -84,8 +72,7 @@ export const TabView = memo(
       } = useTabViewHook<T>({
         defaultIndexTab,
         routes,
-        collapseHeaderOptions: collapseHeaderOptionsState,
-        syncScrollableAtom,
+        activeScrollViewID: syncedScrollableState.activeScrollViewID,
         onChangeTab,
       });
 
@@ -101,29 +88,20 @@ export const TabView = memo(
 
             paperViewRef.current.setScrollEnabled(isSwipe);
           },
-          clean: () => {
-            position.value = 0;
-            currentIndex.value = 0;
-          },
-          reset: () => {
-            clearTimeout(timeoutReset.current);
-            setIsReset(true);
-            timeoutReset.current = setTimeout(() => {
-              setIsReset(false);
-            }, 0);
-          },
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
       }, []);
 
       return (
-        !isReset && (
-          <Provider>
-            <ViewWithSetHeightRoot
-              style={styles.container}
-              syncScrollableAtom={syncScrollableAtom}
-              collapseHeaderOptions={collapseHeaderOptionsState}
-            >
+        <SyncedScrollableState.Provider value={syncedScrollableState}>
+          <CollapseHeaderOptionsContext.Provider
+            value={{
+              isSnap: isSnap || false,
+              minHeightHeader: minHeightHeader || 0,
+              revealHeaderOnScroll: revealHeaderOnScroll || false,
+              styleHeaderContainer,
+            }}
+          >
+            <ViewWithSetHeightRoot style={styles.container}>
               <WrapperTabBarWithCollapseHeader
                 renderTabBar={renderTabBar}
                 renderHeader={renderHeader}
@@ -132,45 +110,35 @@ export const TabView = memo(
                 currentIndex={currentIndex}
                 paperViewRef={paperViewRef}
                 pageScrollState={pageScrollState}
-                collapseHeaderOptions={collapseHeaderOptionsState}
-                syncScrollableAtom={syncScrollableAtom}
               />
-              <CollapseHeaderOptionsContextProvider
-                collapseHeaderOptions={collapseHeaderOptionsState}
-                idTabView={idTabView}
+
+              <AnimatedPagerView
+                //@ts-ignore
+                ref={paperViewRef}
+                scrollEnabled={swipeEnabled}
+                style={styles.pagerView}
+                initialPage={defaultIndexTab}
+                offscreenPageLimit={1}
+                onPageScroll={handlePageScroll}
+                onPageSelected={handlePageSelected}
+                onPageScrollStateChanged={handlePageScrollStateChanged}
               >
-                <AnimatedPagerView
-                  //@ts-ignore
-                  ref={paperViewRef}
-                  scrollEnabled={scrollEnabled}
-                  style={styles.pagerView}
-                  initialPage={defaultIndexTab}
-                  offscreenPageLimit={1}
-                  onPageScroll={handlePageScroll}
-                  onPageSelected={handlePageSelected}
-                  onPageScrollStateChanged={handlePageScrollStateChanged}
-                >
-                  {routes.map((item, index) => (
-                    <View
-                      key={item.key}
-                      style={styles.item}
-                      collapsable={false}
-                    >
-                      <Scene<T>
-                        item={item}
-                        lazy={lazy}
-                        index={index}
-                        currentIndex={currentIndex}
-                        pageScrollState={pageScrollState}
-                        renderScene={renderScene}
-                      />
-                    </View>
-                  ))}
-                </AnimatedPagerView>
-              </CollapseHeaderOptionsContextProvider>
+                {routes.map((item, index) => (
+                  <View key={item.key} style={styles.item} collapsable={false}>
+                    <Scene<T>
+                      item={item}
+                      lazy={lazy}
+                      index={index}
+                      currentIndex={currentIndex}
+                      pageScrollState={pageScrollState}
+                      renderScene={renderScene}
+                    />
+                  </View>
+                ))}
+              </AnimatedPagerView>
             </ViewWithSetHeightRoot>
-          </Provider>
-        )
+          </CollapseHeaderOptionsContext.Provider>
+        </SyncedScrollableState.Provider>
       );
     }
   )

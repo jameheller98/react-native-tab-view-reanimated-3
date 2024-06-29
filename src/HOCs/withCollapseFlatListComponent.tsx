@@ -25,7 +25,6 @@ function withCollapseFlatListComponent<T>(
       FlatList,
       FlatListProps<T> & {
         id: string;
-        idTabView: string;
         handleScroll?: (event: NativeScrollEvent) => void;
       }
     >((props, ref) => {
@@ -33,7 +32,6 @@ function withCollapseFlatListComponent<T>(
       const innerScrollRef = useRef<FlatList>(null);
       const {
         id,
-        idTabView,
         handleScroll: handleScrollFlatList,
         contentContainerStyle,
         ...rest
@@ -43,7 +41,7 @@ function withCollapseFlatListComponent<T>(
 
       useEnabledScroll(innerScrollRef, id);
 
-      useSyncScroll(innerScrollRef, id, offsetCurrentScroll, idTabView);
+      useSyncScroll(innerScrollRef, id, offsetCurrentScroll);
 
       const styleContainerComponent = useAnimatedStyleCollapseScroll(
         contentContainerStyle
@@ -52,8 +50,6 @@ function withCollapseFlatListComponent<T>(
       const handleScroll = useHandleScroll(
         offsetCurrentScroll,
         innerScrollRef,
-        idTabView,
-        undefined,
         handleScrollFlatList
       );
 

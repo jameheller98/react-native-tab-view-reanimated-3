@@ -1,6 +1,6 @@
 {
   "name": "react-native-tab-view-reanimated-3",
-  "version": "0.3.38",
+  "version": "0.3.40",
   "description": "A package create tab view in react native",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -88,8 +88,8 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
-    "react-native-reanimated": "*",
-    "react-native-pager-view": "*"
+    "react-native-pager-view": "*",
+    "react-native-reanimated": "*"
   },
   "workspaces": [
     "example"
@@ -170,8 +170,5 @@
   },
   "directories": {
     "example": "example"
-  },
-  "dependencies": {
-    "jotai": "^2.8.4"
   }
 }

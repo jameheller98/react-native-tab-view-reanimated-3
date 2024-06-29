@@ -1,4 +1,3 @@
-import type { PrimitiveAtom } from 'jotai';
 import type { Component, MutableRefObject, ReactElement } from 'react';
 import type { HostComponent, StyleProp, ViewStyle } from 'react-native';
 import type { NativeProps } from 'react-native-pager-view/lib/typescript/PagerViewNativeComponent/PagerViewNativeComponent';
@@ -53,19 +52,15 @@ export type TTabView<T> = {
   routes: IRoute<T>[];
   lazy?: boolean;
   defaultIndexTab?: number;
-  scrollEnabled?: boolean;
-  collapseHeaderOptions?: Partial<TCollapseHeaderOptions>;
-  idTabView?: string;
-  syncScrollableAtom: PrimitiveAtom<TStateScrollable>;
+  swipeEnabled?: boolean;
   renderTabBar?: (props: TTabBar<T>) => ReactElement;
   renderScene: ({ route }: { route: IRoute<T> }) => ReactElement;
   onChangeTab?: (currentIndexTab: number) => void;
-} & Partial<Pick<TCollapseHeader, 'renderHeader'>>;
+} & Partial<Pick<TCollapseHeader, 'renderHeader'>> &
+  Partial<TCollapseHeaderOptions>;
 export type RTabView = {
   setIndexTab: (indexTab: number) => void;
   setIsSwipe: (isSwipe: boolean) => void;
-  clean: () => void;
-  reset: () => void;
 };
 
 export type TTabBar<T> = {
@@ -98,8 +93,6 @@ export type TScene<T> = {
 
 export type TCollapseHeader = {
   children: Element;
-  collapseHeaderOptions: NonNullable<TCollapseHeaderOptions>;
-  syncScrollableAtom: PrimitiveAtom<TStateScrollable>;
   renderHeader: ({
     offsetActiveScrollView,
   }: {
@@ -114,10 +107,10 @@ export type THeightControl = {
 };
 
 export type TCollapseHeaderOptions = {
-  frozenTopOffset: number;
+  minHeightHeader: number;
   styleHeaderContainer?: StyleProp<ViewStyle>;
-  isStickHeaderOnTop: boolean;
-  isCollapseHeader: boolean;
+  revealHeaderOnScroll: boolean;
+  isSnap: boolean;
 };
 
 export type TStateScrollable = {

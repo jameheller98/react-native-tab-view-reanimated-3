@@ -1,12 +1,13 @@
-import { useAtomValue } from 'jotai';
+import { useAtomValue, type PrimitiveAtom } from 'jotai';
 import { useMemo, useState } from 'react';
 import { StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 import { runOnJS, useAnimatedReaction } from 'react-native-reanimated';
 import { syncedScrollableAtomReadOnly } from '../atoms/syncedScrollableAtom';
-import type { THeightControl } from '../tabView.types';
+import type { THeightControl, TStateScrollable } from '../tabView.types';
 
 export default function useStyleContainerCollapseScroll(
-  contentContainerStyle: StyleProp<ViewStyle>
+  contentContainerStyle: StyleProp<ViewStyle>,
+  syncScrollableAtom?: PrimitiveAtom<TStateScrollable>
 ) {
   const [heightControl, setHeightControl] = useState<THeightControl>({
     heightHeader: 0,
@@ -14,7 +15,7 @@ export default function useStyleContainerCollapseScroll(
     heightTabBar: 0,
   });
   const { heightHeader, heightTabBar, heightRoot } = useAtomValue(
-    syncedScrollableAtomReadOnly
+    syncScrollableAtom || syncedScrollableAtomReadOnly
   );
   const contentContainerFlatten = StyleSheet.flatten(contentContainerStyle);
 

@@ -1,3 +1,4 @@
+import type { PrimitiveAtom } from 'jotai';
 import type { Component, MutableRefObject, ReactElement } from 'react';
 import type { HostComponent, StyleProp, ViewStyle } from 'react-native';
 import type { NativeProps } from 'react-native-pager-view/lib/typescript/PagerViewNativeComponent/PagerViewNativeComponent';
@@ -55,6 +56,7 @@ export type TTabView<T> = {
   scrollEnabled?: boolean;
   collapseHeaderOptions?: Partial<TCollapseHeaderOptions>;
   idTabView?: string;
+  syncScrollableAtom: PrimitiveAtom<TStateScrollable>;
   renderTabBar?: (props: TTabBar<T>) => ReactElement;
   renderScene: ({ route }: { route: IRoute<T> }) => ReactElement;
   onChangeTab?: (currentIndexTab: number) => void;
@@ -97,6 +99,7 @@ export type TScene<T> = {
 export type TCollapseHeader = {
   children: Element;
   collapseHeaderOptions: NonNullable<TCollapseHeaderOptions>;
+  syncScrollableAtom: PrimitiveAtom<TStateScrollable>;
   renderHeader: ({
     offsetActiveScrollView,
   }: {
@@ -115,4 +118,12 @@ export type TCollapseHeaderOptions = {
   styleHeaderContainer?: StyleProp<ViewStyle>;
   isStickHeaderOnTop: boolean;
   isCollapseHeader: boolean;
+};
+
+export type TStateScrollable = {
+  activeScrollViewID: SharedValue<string>;
+  offsetActiveScrollView: SharedValue<number>;
+  heightHeader: SharedValue<number>;
+  heightTabBar: SharedValue<number>;
+  heightRoot: SharedValue<number>;
 };

@@ -1,3 +1,4 @@
+import type { PrimitiveAtom } from 'jotai';
 import React, {
   forwardRef,
   memo,
@@ -12,9 +13,11 @@ import useHandleScroll from '../hooks/useHandleScroll';
 import useInitScroll from '../hooks/useInitScrollView';
 import useAnimatedStyleCollapseScroll from '../hooks/useStyleContainerCollapseScroll';
 import useSyncScroll from '../hooks/useSyncScroll';
+import type { TStateScrollable } from '../tabView.types';
 
-function withCollapseScrollViewComponent(
-  Component: ComponentClass<Animated.AnimatedScrollViewProps>
+export function withCollapseScrollComponent(
+  Component: ComponentClass<Animated.AnimatedScrollViewProps>,
+  syncScrollableAtom: PrimitiveAtom<TStateScrollable>
 ) {
   return memo(
     forwardRef<
@@ -37,23 +40,28 @@ function withCollapseScrollViewComponent(
 
       useImperativeHandle(ref, () => innerScrollRef.current!, []);
 
-      useEnabledScroll(innerScrollRef, id);
+      useEnabledScroll(innerScrollRef, id, syncScrollableAtom);
 
       useSyncScroll(innerScrollRef, id, offsetCurrentScroll, idTabView);
 
       const styleContainerComponent = useAnimatedStyleCollapseScroll(
-        contentContainerStyle
+        contentContainerStyle,
+        syncScrollableAtom
       );
 
       const handleScroll = useHandleScroll(
         offsetCurrentScroll,
         innerScrollRef,
         idTabView,
-        undefined,
+        syncScrollableAtom,
         handleScrollView
       );
 
-      const handleInitScroll = useInitScroll(innerScrollRef, id);
+      const handleInitScroll = useInitScroll(
+        innerScrollRef,
+        id,
+        syncScrollableAtom
+      );
 
       return (
         <Component
@@ -68,7 +76,3 @@ function withCollapseScrollViewComponent(
     })
   );
 }
-
-export const ScrollViewWithCollapse = withCollapseScrollViewComponent(
-  Animated.ScrollView
-);

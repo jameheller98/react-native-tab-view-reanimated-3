@@ -53,6 +53,7 @@ function withCollapseFlatListComponent<T>(
         offsetCurrentScroll,
         innerScrollRef,
         idTabView,
+        undefined,
         handleScrollFlatList
       );
 

@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai';
+import { useAtomValue, type PrimitiveAtom } from 'jotai';
 import { useCallback, type RefObject } from 'react';
 import type { FlatList, NativeScrollEvent, ScrollView } from 'react-native';
 import {
@@ -8,18 +8,20 @@ import {
 } from 'react-native-reanimated';
 import { syncedScrollableAtomReadOnly } from '../atoms/syncedScrollableAtom';
 import { useCollapseHeaderOptionsContext } from '../contexts/CollapseHeaderOptionsContext';
+import type { TStateScrollable } from '../tabView.types';
 import { clamp, getCloser } from '../tabViewUtils';
 
 export default function useHandleScroll(
   offsetCurrentScroll: SharedValue<number>,
   innerScrollRef: RefObject<FlatList<any> | ScrollView>,
   idTabView?: string,
+  syncScrollableAtom?: PrimitiveAtom<TStateScrollable>,
   handleScrollView?: (event: NativeScrollEvent) => void
 ) {
   const { frozenTopOffset, isStickHeaderOnTop } =
     useCollapseHeaderOptionsContext(idTabView);
   const { offsetActiveScrollView, heightHeader } = useAtomValue(
-    syncedScrollableAtomReadOnly
+    syncScrollableAtom || syncedScrollableAtomReadOnly
   );
 
   const handleAutoScroll = useCallback(

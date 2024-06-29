@@ -6,17 +6,16 @@ import Animated, {
   interpolate,
   useAnimatedStyle,
 } from 'react-native-reanimated';
-import { syncedScrollableAtomReadOnly } from '../atoms/syncedScrollableAtom';
 import type { TCollapseHeader } from '../tabView.types';
 
 const CollapseHeader = ({
   children,
   collapseHeaderOptions,
+  syncScrollableAtom,
   renderHeader,
 }: TCollapseHeader) => {
-  const { offsetActiveScrollView, heightHeader } = useAtomValue(
-    syncedScrollableAtomReadOnly
-  );
+  const { offsetActiveScrollView, heightHeader } =
+    useAtomValue(syncScrollableAtom);
 
   const handleLayout = useCallback(
     (e: LayoutChangeEvent) => {

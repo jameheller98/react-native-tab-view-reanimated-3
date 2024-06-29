@@ -1,15 +1,17 @@
-import { useAtomValue } from 'jotai';
+import { useAtomValue, type PrimitiveAtom } from 'jotai';
 import { useCallback, type RefObject } from 'react';
 import type { FlatList, ScrollView } from 'react-native';
 import { runOnJS } from 'react-native-reanimated';
 import { syncedScrollableAtomReadOnly } from '../atoms/syncedScrollableAtom';
+import type { TStateScrollable } from '../tabView.types';
 
 export default function useInitScroll(
   innerScrollRef: RefObject<FlatList<any> | ScrollView>,
-  id: string
+  id: string,
+  syncScrollableAtom?: PrimitiveAtom<TStateScrollable>
 ) {
   const { activeScrollViewID, offsetActiveScrollView } = useAtomValue(
-    syncedScrollableAtomReadOnly
+    syncScrollableAtom || syncedScrollableAtomReadOnly
   );
 
   const handleScroll = useCallback(

@@ -1,16 +1,15 @@
 import { useAtomValue } from 'jotai';
 import React, { memo, useCallback } from 'react';
 import { View, type LayoutChangeEvent } from 'react-native';
-import { syncedScrollableAtomReadOnly } from '../atoms/syncedScrollableAtom';
 import type { TCollapseHeader, TTabBar, TTabView } from '../tabView.types';
 import { TabBar } from './TabBar';
 
 const WrapperTabBar = <T,>(
   props: TTabBar<T> &
     Pick<TTabView<T>, 'renderTabBar'> &
-    Pick<TCollapseHeader, 'collapseHeaderOptions'>
+    Pick<TCollapseHeader, 'collapseHeaderOptions' | 'syncScrollableAtom'>
 ) => {
-  const { heightTabBar } = useAtomValue(syncedScrollableAtomReadOnly);
+  const { heightTabBar } = useAtomValue(props.syncScrollableAtom);
   const { renderTabBar, collapseHeaderOptions, ...rest } = props;
 
   const handleLayout = useCallback(

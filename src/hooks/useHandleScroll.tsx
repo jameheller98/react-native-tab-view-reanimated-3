@@ -6,7 +6,9 @@ import {
   type ScrollView,
 } from 'react-native';
 import {
+  Extrapolation,
   cancelAnimation,
+  interpolate,
   runOnJS,
   useAnimatedScrollHandler,
   useSharedValue,
@@ -29,7 +31,7 @@ export default function useHandleScroll(
   const { minHeightHeader, isSnap, revealHeaderOnScroll } = useContext(
     CollapseHeaderOptionsContext
   );
-  const { offsetActiveScrollView, heightHeader } = useContext(
+  const { offsetActiveScrollView, heightHeader, heightRoot } = useContext(
     SyncedScrollableState
   );
   const afterDrag = useSharedValue(0);
@@ -85,6 +87,9 @@ export default function useHandleScroll(
       onBeginDrag: () => {
         if (IS_IOS) cancelAnimation(afterDrag);
       },
+      onMomentumBegin: () => {
+        if (IS_IOS) cancelAnimation(afterDrag);
+      },
       onScroll: (event) => {
         handleScrollView?.(event);
 
@@ -104,7 +109,17 @@ export default function useHandleScroll(
           );
         }
 
-        offsetCurrentScroll.value = event.contentOffset.y;
+        const clampMax =
+          event.contentSize.height -
+          (heightRoot.value || 0) +
+          event.contentInset.top;
+
+        offsetCurrentScroll.value = interpolate(
+          event.contentOffset.y,
+          [0, clampMax],
+          [0, clampMax],
+          Extrapolation.CLAMP
+        );
       },
       onEndDrag: (event) => {
         if (IS_IOS) {

@@ -58,10 +58,8 @@ export default function useHandleScroll(
       let offsetY = event.contentOffset.y;
 
       if (
-        !(
-          offsetActiveScrollView.value === 0 ||
-          offsetActiveScrollView.value === heightHeader.value - minHeightHeader
-        )
+        offsetActiveScrollView.value > 0 &&
+        offsetActiveScrollView.value < heightHeader.value - minHeightHeader
       ) {
         const closer = getCloser(
           offsetActiveScrollView.value,

@@ -59,6 +59,7 @@ function withCollapseScrollViewComponent(
           onLayout={handleInitScroll}
           contentContainerStyle={styleContainerComponent}
           scrollEventThrottle={16}
+          onMomentumScrollEnd={() => {}}
         />
       );
     })

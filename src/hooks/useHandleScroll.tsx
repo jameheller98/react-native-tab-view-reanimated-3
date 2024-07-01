@@ -1,13 +1,25 @@
 import { useCallback, useContext, type RefObject } from 'react';
-import type { FlatList, NativeScrollEvent, ScrollView } from 'react-native';
 import {
+  Platform,
+  type FlatList,
+  type NativeScrollEvent,
+  type ScrollView,
+} from 'react-native';
+import {
+  cancelAnimation,
   runOnJS,
   useAnimatedScrollHandler,
+  useSharedValue,
+  withDelay,
+  withTiming,
   type SharedValue,
 } from 'react-native-reanimated';
 import { CollapseHeaderOptionsContext } from '../contexts/CollapseHeaderOptionsContext';
 import { SyncedScrollableState } from '../contexts/SyncedScrollableState';
 import { clamp, getCloser } from '../tabViewUtils';
+
+const IS_IOS = Platform.OS === 'ios';
+const ONE_FRAME_MS = 16;
 
 export default function useHandleScroll(
   offsetCurrentScroll: SharedValue<number>,
@@ -20,6 +32,7 @@ export default function useHandleScroll(
   const { offsetActiveScrollView, heightHeader } = useContext(
     SyncedScrollableState
   );
+  const afterDrag = useSharedValue(0);
 
   const handleAutoScroll = useCallback(
     (offsetY: number) => {
@@ -35,8 +48,43 @@ export default function useHandleScroll(
     [innerScrollRef]
   );
 
+  const onMomentumEnd = useCallback(
+    (event: NativeScrollEvent) => {
+      'worklet';
+      if (!isSnap) return;
+
+      let offsetY = event.contentOffset.y;
+
+      if (
+        !(
+          offsetActiveScrollView.value === 0 ||
+          offsetActiveScrollView.value === heightHeader.value - minHeightHeader
+        )
+      ) {
+        const closer = getCloser(
+          offsetActiveScrollView.value,
+          heightHeader.value - minHeightHeader,
+          0
+        );
+
+        if (closer === heightHeader.value - minHeightHeader) {
+          offsetY = offsetY + (heightHeader.value - minHeightHeader);
+        } else {
+          offsetY = offsetY - (heightHeader.value - minHeightHeader);
+        }
+
+        runOnJS(handleAutoScroll)(offsetY);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [isSnap, handleAutoScroll, minHeightHeader]
+  );
+
   const scrollHandler = useAnimatedScrollHandler(
     {
+      onBeginDrag: () => {
+        if (IS_IOS) cancelAnimation(afterDrag);
+      },
       onScroll: (event) => {
         handleScrollView?.(event);
 
@@ -58,33 +106,23 @@ export default function useHandleScroll(
 
         offsetCurrentScroll.value = event.contentOffset.y;
       },
-      onMomentumEnd: (event) => {
-        if (!isSnap) return;
-
-        let offsetY = event.contentOffset.y;
-
-        if (
-          !(
-            offsetActiveScrollView.value === 0 ||
-            offsetActiveScrollView.value ===
-              heightHeader.value - minHeightHeader
-          )
-        ) {
-          const closer = getCloser(
-            offsetActiveScrollView.value,
-            heightHeader.value - minHeightHeader,
-            0
+      onEndDrag: (event) => {
+        if (IS_IOS) {
+          // we delay this by one frame so that onMomentumBegin may fire on iOS
+          afterDrag.value = withDelay(
+            ONE_FRAME_MS,
+            withTiming(0, { duration: 0 }, (isFinished) => {
+              // if the animation is finished, the onMomentumBegin has
+              // never started, so we need to manually trigger the onMomentumEnd
+              // to make sure we snap
+              if (isFinished) {
+                onMomentumEnd(event);
+              }
+            })
           );
-
-          if (closer === heightHeader.value - minHeightHeader) {
-            offsetY = offsetY + (heightHeader.value - minHeightHeader);
-          } else {
-            offsetY = offsetY - (heightHeader.value - minHeightHeader);
-          }
-
-          runOnJS(handleAutoScroll)(offsetY);
         }
       },
+      onMomentumEnd,
     },
     [
       minHeightHeader,

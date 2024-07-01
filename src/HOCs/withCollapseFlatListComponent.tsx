@@ -63,6 +63,7 @@ function withCollapseFlatListComponent<T>(
           onLayout={handleInitScroll}
           contentContainerStyle={styleContainerComponent}
           scrollEventThrottle={16}
+          onMomentumScrollEnd={() => {}}
         />
       );
     })
